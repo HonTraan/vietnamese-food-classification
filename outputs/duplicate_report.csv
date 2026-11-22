@@ -1,0 +1,251 @@
+kept_path,excluded_path,reason,same_label
+data/raw/Banh beo/00044.jpg,data/raw/Banh bot loc/00219.jpg,duplicate,False
+data/raw/Banh beo/00071.jpg,data/raw/Banh khot/00317.jpg,duplicate,False
+data/raw/Banh beo/00280.jpg,data/raw/Banh beo/00582.jpg,duplicate,True
+data/raw/Banh beo/00323.jpg,data/raw/Banh beo/00619.jpg,duplicate,True
+data/raw/Banh beo/00347.jpg,data/raw/Banh bot loc/00362.jpg,duplicate,False
+data/raw/Banh beo/00411.jpg,data/raw/Banh beo/00450.jpg,duplicate,True
+data/raw/Banh beo/00424.jpg,data/raw/Banh beo/00630.jpg,duplicate,True
+data/raw/Banh beo/00433.jpg,data/raw/Banh gio/00426.jpg,duplicate,False
+data/raw/Banh beo/00548.jpg,data/raw/Banh bot loc/00412.jpg,duplicate,False
+data/raw/Banh beo/00548.jpg,data/raw/Banh duc/00230.jpg,duplicate,False
+data/raw/Banh beo/00593.jpg,data/raw/Banh beo/00644.jpg,duplicate,True
+data/raw/Banh bot loc/00016.jpg,data/raw/Banh bot loc/00591.jpg,duplicate,True
+data/raw/Banh bot loc/00038.jpg,data/raw/Banh bot loc/00576.jpg,duplicate,True
+data/raw/Banh bot loc/00113.jpg,data/raw/Banh bot loc/00476.jpg,duplicate,True
+data/raw/Banh bot loc/00116.jpg,data/raw/Banh bot loc/00119.jpg,duplicate,True
+data/raw/Banh bot loc/00116.jpg,data/raw/Banh bot loc/00468.jpg,duplicate,True
+data/raw/Banh bot loc/00182.jpg,data/raw/Banh bot loc/00695.jpg,duplicate,True
+data/raw/Banh bot loc/00228.jpg,data/raw/Goi cuon/00555.jpg,duplicate,False
+data/raw/Banh bot loc/00428.jpg,data/raw/Banh gio/00602.jpg,duplicate,False
+data/raw/Banh bot loc/00433.jpg,data/raw/Banh bot loc/00706.jpg,duplicate,True
+data/raw/Banh bot loc/00473.jpg,data/raw/Banh bot loc/00685.jpg,duplicate,True
+data/raw/Banh bot loc/00487.jpg,data/raw/Banh bot loc/00717.jpg,duplicate,True
+data/raw/Banh bot loc/00633.jpg,data/raw/Banh khot/00448.jpg,duplicate,False
+data/raw/Banh can/00012.jpg,data/raw/Banh can/00596.jpg,duplicate,True
+data/raw/Banh can/00065.jpg,data/raw/Banh can/00529.jpg,duplicate,True
+data/raw/Banh can/00142.jpg,data/raw/Banh khot/00141.jpg,duplicate,False
+data/raw/Banh can/00188.jpg,data/raw/Banh khot/00604.jpg,duplicate,False
+data/raw/Banh can/00214.jpg,data/raw/Banh can/00644.jpg,duplicate,True
+data/raw/Banh can/00282.jpg,data/raw/Banh khot/00625.jpg,duplicate,False
+data/raw/Banh can/00498.jpg,data/raw/Banh can/00589.jpg,duplicate,True
+data/raw/Banh can/00575.jpg,data/raw/Banh khot/00392.jpg,duplicate,False
+data/raw/Banh canh/00014.jpg,data/raw/Banh canh/00773.jpg,duplicate,True
+data/raw/Banh canh/00155.jpg,data/raw/Banh canh/00157.jpg,duplicate,True
+data/raw/Banh canh/00185.jpg,data/raw/Banh canh/00186.jpg,duplicate,True
+data/raw/Banh canh/00188.jpg,data/raw/Banh canh/00192.jpg,duplicate,True
+data/raw/Banh canh/00201.jpg,data/raw/Pho/00565.jpg,duplicate,False
+data/raw/Banh canh/00210.jpg,data/raw/Banh canh/00374.jpg,duplicate,True
+data/raw/Banh canh/00371.jpg,data/raw/Banh canh/00373.jpg,duplicate,True
+data/raw/Banh canh/00405.jpg,data/raw/Hu tieu/00855.jpg,duplicate,False
+data/raw/Banh canh/00514.jpg,data/raw/Banh canh/00850.jpg,duplicate,True
+data/raw/Banh canh/00545.jpg,data/raw/Banh canh/00559.jpg,duplicate,True
+data/raw/Banh canh/00593.jpg,data/raw/Bun rieu/00890.jpg,duplicate,False
+data/raw/Banh canh/00623.jpg,data/raw/Chao long/00956.jpg,duplicate,False
+data/raw/Banh canh/00821.jpg,data/raw/Bun rieu/01012.jpg,duplicate,False
+data/raw/Banh canh/00821.jpg,data/raw/Hu tieu/00348.jpg,duplicate,False
+data/raw/Banh canh/00890.jpg,data/raw/Hu tieu/00705.jpg,duplicate,False
+data/raw/Banh chung/00013.jpg,data/raw/Banh chung/00273.jpg,duplicate,True
+data/raw/Banh chung/00015.jpg,data/raw/Banh chung/00140.jpg,duplicate,True
+data/raw/Banh chung/00045.jpg,data/raw/Banh chung/00271.jpg,duplicate,True
+data/raw/Banh chung/00066.jpg,data/raw/Banh chung/00302.jpg,duplicate,True
+data/raw/Banh chung/00189.jpg,data/raw/Banh chung/00307.jpg,duplicate,True
+data/raw/Banh chung/00267.jpg,data/raw/Banh chung/00408.jpg,duplicate,True
+data/raw/Banh chung/00281.jpg,data/raw/Banh chung/00404.jpg,duplicate,True
+data/raw/Banh chung/00300.jpg,data/raw/Banh chung/00442.jpg,duplicate,True
+data/raw/Banh chung/00308.jpg,data/raw/Banh chung/00318.jpg,duplicate,True
+data/raw/Banh chung/00341.jpg,data/raw/Banh tet/00633.jpg,duplicate,False
+data/raw/Banh chung/00443.jpg,data/raw/Banh tet/00623.jpg,duplicate,False
+data/raw/Banh chung/00455.jpg,data/raw/Banh tet/00628.jpg,duplicate,False
+data/raw/Banh cuon/00110.jpg,data/raw/Banh cuon/00195.jpg,duplicate,True
+data/raw/Banh cuon/00213.jpg,data/raw/Banh cuon/00825.jpg,duplicate,True
+data/raw/Banh cuon/00226.jpg,data/raw/Banh gio/00222.jpg,duplicate,False
+data/raw/Banh cuon/00292.jpg,data/raw/Banh duc/00096.jpg,duplicate,False
+data/raw/Banh cuon/00306.jpg,data/raw/Banh duc/00560.jpg,duplicate,False
+data/raw/Banh cuon/00382.jpg,data/raw/Banh cuon/00383.jpg,duplicate,True
+data/raw/Banh cuon/00715.jpg,data/raw/Banh cuon/01111.jpg,duplicate,True
+data/raw/Banh cuon/00950.jpg,data/raw/Bun bo Hue/00204.jpg,duplicate,False
+data/raw/Banh cuon/01032.jpg,data/raw/Nem chua/00273.jpg,duplicate,False
+data/raw/Banh duc/00002.jpg,data/raw/Banh gio/00581.jpg,duplicate,False
+data/raw/Banh duc/00018.jpg,data/raw/Banh duc/00546.jpg,duplicate,True
+data/raw/Banh duc/00069.jpg,data/raw/Banh gio/00003.jpg,duplicate,False
+data/raw/Banh duc/00087.jpg,data/raw/Banh duc/00580.jpg,duplicate,True
+data/raw/Banh duc/00177.jpg,data/raw/Banh duc/00473.jpg,duplicate,True
+data/raw/Banh duc/00463.jpg,data/raw/Banh gio/00171.jpg,duplicate,False
+data/raw/Banh duc/00556.jpg,data/raw/Banh gio/00635.jpg,duplicate,False
+data/raw/Banh duc/00566.jpg,data/raw/Banh gio/00072.jpg,duplicate,False
+data/raw/Banh duc/00650.jpg,data/raw/Banh gio/00476.jpg,duplicate,False
+data/raw/Banh khot/00086.jpg,data/raw/Banh khot/00671.jpg,duplicate,True
+data/raw/Banh khot/00572.jpg,data/raw/Banh khot/00800.jpg,duplicate,True
+data/raw/Banh khot/00591.jpg,data/raw/Banh khot/00830.jpg,duplicate,True
+data/raw/Banh mi/00045.jpg,data/raw/Banh mi/00988.jpg,duplicate,True
+data/raw/Banh mi/00138.jpg,data/raw/Goi cuon/00833.jpg,duplicate,False
+data/raw/Banh mi/00166.jpg,data/raw/Banh mi/00200.jpg,duplicate,True
+data/raw/Banh mi/00293.jpg,data/raw/Banh mi/00668.jpg,duplicate,True
+data/raw/Banh mi/00293.jpg,data/raw/Banh mi/00998.jpg,duplicate,True
+data/raw/Banh mi/00296.jpg,data/raw/Banh mi/00343.jpg,duplicate,True
+data/raw/Banh mi/00316.jpg,data/raw/Banh mi/00566.jpg,duplicate,True
+data/raw/Banh mi/00322.jpg,data/raw/Banh mi/00402.jpg,duplicate,True
+data/raw/Banh mi/00363.jpg,data/raw/Banh mi/01175.jpg,duplicate,True
+data/raw/Banh mi/00383.jpg,data/raw/Banh mi/00601.jpg,duplicate,True
+data/raw/Banh mi/00440.jpg,data/raw/Banh mi/00476.jpg,duplicate,True
+data/raw/Banh mi/00453.jpg,data/raw/Banh mi/01217.jpg,duplicate,True
+data/raw/Banh mi/00499.jpg,data/raw/Banh mi/01013.jpg,duplicate,True
+data/raw/Banh mi/00511.jpg,data/raw/Banh mi/01192.jpg,duplicate,True
+data/raw/Banh mi/00519.jpg,data/raw/Banh mi/01204.jpg,duplicate,True
+data/raw/Banh mi/00537.jpg,data/raw/Banh mi/00916.jpg,duplicate,True
+data/raw/Banh mi/00611.jpg,data/raw/Banh mi/00929.jpg,duplicate,True
+data/raw/Banh mi/00623.jpg,data/raw/Banh mi/01044.jpg,duplicate,True
+data/raw/Banh mi/00897.jpg,data/raw/Banh mi/00946.jpg,duplicate,True
+data/raw/Banh mi/00982.jpg,data/raw/Banh mi/01154.jpg,duplicate,True
+data/raw/Banh pia/00038.jpg,data/raw/Banh pia/00380.jpg,duplicate,True
+data/raw/Banh pia/00126.jpg,data/raw/Banh pia/00384.jpg,duplicate,True
+data/raw/Banh pia/00222.jpg,data/raw/Banh pia/00429.jpg,duplicate,True
+data/raw/Banh pia/00281.jpg,data/raw/Banh pia/00435.jpg,duplicate,True
+data/raw/Banh pia/00297.jpg,data/raw/Banh pia/00299.jpg,duplicate,True
+data/raw/Banh pia/00300.jpg,data/raw/Banh pia/00442.jpg,duplicate,True
+data/raw/Banh pia/00350.jpg,data/raw/Banh pia/00358.jpg,duplicate,True
+data/raw/Banh tet/00026.jpg,data/raw/Banh tet/00491.jpg,duplicate,True
+data/raw/Banh tet/00068.jpg,data/raw/Banh tet/00069.jpg,duplicate,True
+data/raw/Banh tet/00105.jpg,data/raw/Banh tet/00440.jpg,duplicate,True
+data/raw/Banh tet/00121.jpg,data/raw/Banh tet/00591.jpg,duplicate,True
+data/raw/Banh tet/00195.jpg,data/raw/Banh tet/00672.jpg,duplicate,True
+data/raw/Banh trang nuong/00014.jpg,data/raw/Banh trang nuong/00642.jpg,duplicate,True
+data/raw/Banh trang nuong/00036.jpg,data/raw/Banh trang nuong/00228.jpg,duplicate,True
+data/raw/Banh trang nuong/00042.jpg,data/raw/Banh trang nuong/00043.jpg,duplicate,True
+data/raw/Banh trang nuong/00045.jpg,data/raw/Banh trang nuong/00064.jpg,duplicate,True
+data/raw/Banh trang nuong/00111.jpg,data/raw/Banh trang nuong/00637.jpg,duplicate,True
+data/raw/Banh trang nuong/00130.jpg,data/raw/Banh trang nuong/00549.jpg,duplicate,True
+data/raw/Banh trang nuong/00249.jpg,data/raw/Banh trang nuong/00251.jpg,duplicate,True
+data/raw/Banh xeo/00002.jpg,data/raw/Banh xeo/00446.jpg,duplicate,True
+data/raw/Banh xeo/00023.jpg,data/raw/Banh xeo/00825.jpg,duplicate,True
+data/raw/Banh xeo/00239.jpg,data/raw/Banh xeo/00344.jpg,duplicate,True
+data/raw/Banh xeo/00244.jpg,data/raw/Banh xeo/00844.jpg,duplicate,True
+data/raw/Banh xeo/00486.jpg,data/raw/Banh xeo/00488.jpg,duplicate,True
+data/raw/Banh xeo/00492.jpg,data/raw/Banh xeo/00843.jpg,duplicate,True
+data/raw/Banh xeo/00659.jpg,data/raw/Banh xeo/00676.jpg,duplicate,True
+data/raw/Banh xeo/00883.jpg,data/raw/Bun bo Hue/00815.jpg,duplicate,False
+data/raw/Banh xeo/00883.jpg,data/raw/Bun rieu/00529.jpg,duplicate,False
+data/raw/Bun bo Hue/00134.jpg,data/raw/Mi quang/00820.jpg,duplicate,False
+data/raw/Bun bo Hue/00155.jpg,data/raw/Bun bo Hue/00974.jpg,duplicate,True
+data/raw/Bun bo Hue/00160.jpg,data/raw/Pho/00483.jpg,duplicate,False
+data/raw/Bun bo Hue/00222.jpg,data/raw/Bun rieu/00172.jpg,duplicate,False
+data/raw/Bun bo Hue/00402.jpg,data/raw/Bun bo Hue/01353.jpg,duplicate,True
+data/raw/Bun bo Hue/00403.jpg,data/raw/Bun bo Hue/00714.jpg,duplicate,True
+data/raw/Bun bo Hue/00449.jpg,data/raw/Bun bo Hue/01392.jpg,duplicate,True
+data/raw/Bun bo Hue/00497.jpg,data/raw/Bun bo Hue/01349.jpg,duplicate,True
+data/raw/Bun bo Hue/00617.jpg,data/raw/Bun bo Hue/00619.jpg,duplicate,True
+data/raw/Bun bo Hue/00742.jpg,data/raw/Bun bo Hue/01133.jpg,duplicate,True
+data/raw/Bun bo Hue/00762.jpg,data/raw/Bun bo Hue/01442.jpg,duplicate,True
+data/raw/Bun bo Hue/00797.jpg,data/raw/Bun rieu/01101.jpg,duplicate,False
+data/raw/Bun bo Hue/00835.jpg,data/raw/Bun bo Hue/01455.jpg,duplicate,True
+data/raw/Bun bo Hue/00930.jpg,data/raw/Bun rieu/01085.jpg,duplicate,False
+data/raw/Bun bo Hue/00988.jpg,data/raw/Bun rieu/00992.jpg,duplicate,False
+data/raw/Bun bo Hue/01137.jpg,data/raw/Bun bo Hue/01382.jpg,duplicate,True
+data/raw/Bun bo Hue/01412.jpg,data/raw/Bun rieu/00987.jpg,duplicate,False
+data/raw/Bun bo Hue/01416.jpg,data/raw/Bun bo Hue/01508.jpg,duplicate,True
+data/raw/Bun bo Hue/01505.jpg,data/raw/Pho/00243.jpg,duplicate,False
+data/raw/Bun dau mam tom/00131.jpg,data/raw/Bun dau mam tom/00768.jpg,duplicate,True
+data/raw/Bun rieu/00240.jpg,data/raw/Bun rieu/00821.jpg,duplicate,True
+data/raw/Bun thit nuong/00001.jpg,data/raw/Bun thit nuong/00475.jpg,duplicate,True
+data/raw/Bun thit nuong/00013.jpg,data/raw/Bun thit nuong/00043.jpg,duplicate,True
+data/raw/Bun thit nuong/00040.jpg,data/raw/Bun thit nuong/00646.jpg,duplicate,True
+data/raw/Bun thit nuong/00292.jpg,data/raw/Bun thit nuong/00533.jpg,duplicate,True
+data/raw/Bun thit nuong/00386.jpg,data/raw/Goi cuon/00638.jpg,duplicate,False
+data/raw/Ca kho to/00013.jpg,data/raw/Ca kho to/00547.jpg,duplicate,True
+data/raw/Ca kho to/00052.jpg,data/raw/Ca kho to/00054.jpg,duplicate,True
+data/raw/Ca kho to/00103.jpg,data/raw/Ca kho to/00108.jpg,duplicate,True
+data/raw/Ca kho to/00459.jpg,data/raw/Ca kho to/00462.jpg,duplicate,True
+data/raw/Ca kho to/00470.jpg,data/raw/Ca kho to/00489.jpg,duplicate,True
+data/raw/Ca kho to/00509.jpg,data/raw/Canh chua/00365.jpg,duplicate,False
+data/raw/Canh chua/00001.jpg,data/raw/Canh chua/00569.jpg,duplicate,True
+data/raw/Canh chua/00019.jpg,data/raw/Canh chua/00027.jpg,duplicate,True
+data/raw/Canh chua/00039.jpg,data/raw/Canh chua/00670.jpg,duplicate,True
+data/raw/Canh chua/00064.jpg,data/raw/Canh chua/00735.jpg,duplicate,True
+data/raw/Canh chua/00087.jpg,data/raw/Canh chua/00137.jpg,duplicate,True
+data/raw/Canh chua/00108.jpg,data/raw/Canh chua/00317.jpg,duplicate,True
+data/raw/Canh chua/00122.jpg,data/raw/Canh chua/00244.jpg,duplicate,True
+data/raw/Canh chua/00128.jpg,data/raw/Canh chua/00698.jpg,duplicate,True
+data/raw/Canh chua/00294.jpg,data/raw/Canh chua/00616.jpg,duplicate,True
+data/raw/Canh chua/00331.jpg,data/raw/Canh chua/00333.jpg,duplicate,True
+data/raw/Canh chua/00594.jpg,data/raw/Canh chua/00686.jpg,duplicate,True
+data/raw/Cao lau/00135.jpg,data/raw/Cao lau/00536.jpg,duplicate,True
+data/raw/Cao lau/00195.jpg,data/raw/Mi quang/00780.jpg,duplicate,False
+data/raw/Cao lau/00230.jpg,data/raw/Mi quang/00823.jpg,duplicate,False
+data/raw/Cao lau/00337.jpg,data/raw/Cao lau/00439.jpg,duplicate,True
+data/raw/Chao long/00001.jpg,data/raw/Chao long/00059.jpg,duplicate,True
+data/raw/Chao long/00060.jpg,data/raw/Chao long/00870.jpg,duplicate,True
+data/raw/Chao long/00075.jpg,data/raw/Chao long/00182.jpg,duplicate,True
+data/raw/Chao long/00076.jpg,data/raw/Chao long/00955.jpg,duplicate,True
+data/raw/Chao long/00081.jpg,data/raw/Chao long/00298.jpg,duplicate,True
+data/raw/Chao long/00093.jpg,data/raw/Chao long/00891.jpg,duplicate,True
+data/raw/Chao long/00132.jpg,data/raw/Chao long/00973.jpg,duplicate,True
+data/raw/Chao long/00386.jpg,data/raw/Chao long/00409.jpg,duplicate,True
+data/raw/Chao long/00414.jpg,data/raw/Chao long/00962.jpg,duplicate,True
+data/raw/Chao long/00641.jpg,data/raw/Chao long/00844.jpg,duplicate,True
+data/raw/Chao long/00845.jpg,data/raw/Hu tieu/00307.jpg,duplicate,False
+data/raw/Chao long/00893.jpg,data/raw/Chao long/00935.jpg,duplicate,True
+data/raw/Chao long/00898.jpg,data/raw/Chao long/00931.jpg,duplicate,True
+data/raw/Chao long/01046.jpg,data/raw/Chao long/01066.jpg,duplicate,True
+data/raw/Com tam/00007.jpg,data/raw/Com tam/00015.jpg,duplicate,True
+data/raw/Com tam/00028.jpg,data/raw/Com tam/00033.jpg,duplicate,True
+data/raw/Com tam/00029.jpg,data/raw/Com tam/00032.jpg,duplicate,True
+data/raw/Com tam/00068.jpg,data/raw/Com tam/00448.jpg,duplicate,True
+data/raw/Com tam/00276.jpg,data/raw/Com tam/00665.jpg,duplicate,True
+data/raw/Com tam/00283.jpg,data/raw/Com tam/00286.jpg,duplicate,True
+data/raw/Com tam/00290.jpg,data/raw/Com tam/00694.jpg,duplicate,True
+data/raw/Com tam/00483.jpg,data/raw/Com tam/00706.jpg,duplicate,True
+data/raw/Goi cuon/00149.jpg,data/raw/Goi cuon/00543.jpg,duplicate,True
+data/raw/Goi cuon/00221.jpg,data/raw/Goi cuon/00256.jpg,duplicate,True
+data/raw/Goi cuon/00292.jpg,data/raw/Goi cuon/00680.jpg,duplicate,True
+data/raw/Goi cuon/00402.jpg,data/raw/Goi cuon/00505.jpg,duplicate,True
+data/raw/Hu tieu/00006.jpg,data/raw/Hu tieu/00643.jpg,duplicate,True
+data/raw/Hu tieu/00013.jpg,data/raw/Hu tieu/00475.jpg,duplicate,True
+data/raw/Hu tieu/00039.jpg,data/raw/Hu tieu/00041.jpg,duplicate,True
+data/raw/Hu tieu/00054.jpg,data/raw/Hu tieu/00695.jpg,duplicate,True
+data/raw/Hu tieu/00060.jpg,data/raw/Hu tieu/00200.jpg,duplicate,True
+data/raw/Hu tieu/00103.jpg,data/raw/Hu tieu/00104.jpg,duplicate,True
+data/raw/Hu tieu/00135.jpg,data/raw/Hu tieu/00137.jpg,duplicate,True
+data/raw/Hu tieu/00230.jpg,data/raw/Mi quang/00100.jpg,duplicate,False
+data/raw/Hu tieu/00230.jpg,data/raw/Mi quang/00725.jpg,duplicate,False
+data/raw/Hu tieu/00284.jpg,data/raw/Hu tieu/00881.jpg,duplicate,True
+data/raw/Hu tieu/00380.jpg,data/raw/Hu tieu/00381.jpg,duplicate,True
+data/raw/Hu tieu/00394.jpg,data/raw/Hu tieu/00395.jpg,duplicate,True
+data/raw/Hu tieu/00441.jpg,data/raw/Hu tieu/00518.jpg,duplicate,True
+data/raw/Hu tieu/00458.jpg,data/raw/Hu tieu/00698.jpg,duplicate,True
+data/raw/Hu tieu/00510.jpg,data/raw/Hu tieu/00982.jpg,duplicate,True
+data/raw/Hu tieu/00784.jpg,data/raw/Hu tieu/00815.jpg,duplicate,True
+data/raw/Hu tieu/00791.jpg,data/raw/Hu tieu/00812.jpg,duplicate,True
+data/raw/Mi quang/00009.jpg,data/raw/Mi quang/00752.jpg,duplicate,True
+data/raw/Mi quang/00014.jpg,data/raw/Mi quang/00874.jpg,duplicate,True
+data/raw/Mi quang/00021.jpg,data/raw/Mi quang/00594.jpg,duplicate,True
+data/raw/Mi quang/00047.jpg,data/raw/Mi quang/00600.jpg,duplicate,True
+data/raw/Mi quang/00053.jpg,data/raw/Mi quang/00116.jpg,duplicate,True
+data/raw/Mi quang/00063.jpg,data/raw/Mi quang/00703.jpg,duplicate,True
+data/raw/Mi quang/00073.jpg,data/raw/Mi quang/00607.jpg,duplicate,True
+data/raw/Mi quang/00075.jpg,data/raw/Mi quang/00134.jpg,duplicate,True
+data/raw/Mi quang/00084.jpg,data/raw/Mi quang/00676.jpg,duplicate,True
+data/raw/Mi quang/00165.jpg,data/raw/Mi quang/00604.jpg,duplicate,True
+data/raw/Mi quang/00190.jpg,data/raw/Mi quang/00698.jpg,duplicate,True
+data/raw/Mi quang/00204.jpg,data/raw/Mi quang/00765.jpg,duplicate,True
+data/raw/Mi quang/00226.jpg,data/raw/Mi quang/00699.jpg,duplicate,True
+data/raw/Mi quang/00246.jpg,data/raw/Mi quang/00697.jpg,duplicate,True
+data/raw/Mi quang/00329.jpg,data/raw/Mi quang/00878.jpg,duplicate,True
+data/raw/Mi quang/00543.jpg,data/raw/Mi quang/00582.jpg,duplicate,True
+data/raw/Mi quang/00572.jpg,data/raw/Mi quang/00717.jpg,duplicate,True
+data/raw/Mi quang/00583.jpg,data/raw/Mi quang/00794.jpg,duplicate,True
+data/raw/Mi quang/00597.jpg,data/raw/Mi quang/00621.jpg,duplicate,True
+data/raw/Mi quang/00632.jpg,data/raw/Mi quang/00873.jpg,duplicate,True
+data/raw/Mi quang/00667.jpg,data/raw/Mi quang/00702.jpg,duplicate,True
+data/raw/Mi quang/00756.jpg,data/raw/Mi quang/00869.jpg,duplicate,True
+data/raw/Nem chua/00017.jpg,data/raw/Nem chua/00019.jpg,duplicate,True
+data/raw/Nem chua/00029.jpg,data/raw/Nem chua/00539.jpg,duplicate,True
+data/raw/Nem chua/00137.jpg,data/raw/Nem chua/00370.jpg,duplicate,True
+data/raw/Nem chua/00144.jpg,data/raw/Nem chua/00146.jpg,duplicate,True
+data/raw/Nem chua/00347.jpg,data/raw/Nem chua/00348.jpg,duplicate,True
+data/raw/Pho/00033.jpg,data/raw/Pho/00047.jpg,duplicate,True
+data/raw/Pho/00044.jpg,data/raw/Pho/00046.jpg,duplicate,True
+data/raw/Pho/00233.jpg,data/raw/Pho/00298.jpg,duplicate,True
+data/raw/Pho/00404.jpg,data/raw/Pho/00763.jpg,duplicate,True
+data/raw/Pho/00491.jpg,data/raw/Pho/00640.jpg,duplicate,True
+data/raw/Xoi xeo/00369.jpg,data/raw/Xoi xeo/00428.jpg,duplicate,True

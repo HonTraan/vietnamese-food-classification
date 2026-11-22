@@ -1,0 +1,10 @@
+{
+  "status": "ai_visual_verification_complete",
+  "total_rows": 808,
+  "closed_visual_pairs": 229,
+  "status_counts": {
+    "ai_visual_reviewed": 229,
+    "correct_prediction": 579
+  },
+  "note": "Tất cả dòng cần rà đã được rà bằng contact sheet AI-assisted. Không đổi nhãn gốc khi chỉ thấy cặp món gần nhau."
+}

@@ -1,0 +1,54 @@
+true_label,predicted_label,count
+Banh canh,Hu tieu,14
+Pho,Bun bo Hue,11
+Bun bo Hue,Pho,10
+Bun bo Hue,Bun rieu,7
+Hu tieu,Bun bo Hue,7
+Banh canh,Bun bo Hue,6
+Hu tieu,Pho,6
+Banh canh,Bun rieu,5
+Banh duc,Banh beo,5
+Hu tieu,Bun rieu,5
+Pho,Hu tieu,5
+Banh canh,Chao long,4
+Banh canh,Bun mam,4
+Banh duc,Xoi xeo,4
+Bun bo Hue,Hu tieu,4
+Banh canh,Mi quang,3
+Banh canh,Canh chua,3
+Banh canh,Pho,3
+Hu tieu,Bun mam,3
+Pho,Banh canh,3
+Pho,Canh chua,3
+Pho,Bun rieu,3
+Banh duc,Banh gio,2
+Banh duc,Bun thit nuong,2
+Banh duc,Banh bot loc,2
+Banh duc,Hu tieu,2
+Bun bo Hue,Chao long,2
+Bun bo Hue,Banh canh,2
+Bun bo Hue,Mi quang,2
+Hu tieu,Chao long,2
+Banh canh,Banh xeo,1
+Banh canh,Banh duc,1
+Banh canh,Bun thit nuong,1
+Banh duc,Bun dau mam tom,1
+Banh duc,Goi cuon,1
+Banh duc,Nem chua,1
+Banh duc,Com tam,1
+Banh duc,Banh pia,1
+Banh duc,Ca kho to,1
+Banh duc,Banh khot,1
+Bun bo Hue,Cao lau,1
+Bun bo Hue,Ca kho to,1
+Bun bo Hue,Canh chua,1
+Hu tieu,Cao lau,1
+Hu tieu,Nem chua,1
+Hu tieu,Banh mi,1
+Hu tieu,Banh canh,1
+Hu tieu,Bun thit nuong,1
+Hu tieu,Xoi xeo,1
+Hu tieu,Banh duc,1
+Pho,Bun thit nuong,1
+Pho,Bun mam,1
+Pho,Chao long,1

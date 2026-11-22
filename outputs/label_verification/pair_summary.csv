@@ -1,0 +1,85 @@
+true_label,predicted_label,count,contact_sheet,status
+Banh canh,Hu tieu,14,outputs/label_verification/Banh_canh__Hu_tieu.jpg,ai_visual_reviewed
+Pho,Bun bo Hue,11,outputs/label_verification/Pho__Bun_bo_Hue.jpg,ai_visual_reviewed
+Bun bo Hue,Pho,10,outputs/label_verification/Bun_bo_Hue__Pho.jpg,ai_visual_reviewed
+Bun rieu,Bun bo Hue,10,outputs/label_verification/Bun_rieu__Bun_bo_Hue.jpg,ai_visual_reviewed
+Bun bo Hue,Bun rieu,7,outputs/label_verification/Bun_bo_Hue__Bun_rieu.jpg,ai_visual_reviewed
+Hu tieu,Bun bo Hue,7,outputs/label_verification/Hu_tieu__Bun_bo_Hue.jpg,ai_visual_reviewed
+Banh beo,Banh duc,6,outputs/label_verification/Banh_beo__Banh_duc.jpg,ai_visual_reviewed
+Banh canh,Bun bo Hue,6,outputs/label_verification/Banh_canh__Bun_bo_Hue.jpg,ai_visual_reviewed
+Banh gio,Banh duc,6,outputs/label_verification/Banh_gio__Banh_duc.jpg,ai_visual_reviewed
+Bun mam,Bun bo Hue,6,outputs/label_verification/Bun_mam__Bun_bo_Hue.jpg,ai_visual_reviewed
+Hu tieu,Pho,6,outputs/label_verification/Hu_tieu__Pho.jpg,ai_visual_reviewed
+Banh canh,Bun rieu,5,outputs/label_verification/Banh_canh__Bun_rieu.jpg,ai_visual_reviewed
+Banh duc,Banh beo,5,outputs/label_verification/Banh_duc__Banh_beo.jpg,ai_visual_reviewed
+Hu tieu,Bun rieu,5,outputs/label_verification/Hu_tieu__Bun_rieu.jpg,ai_visual_reviewed
+Mi quang,Bun bo Hue,5,outputs/label_verification/Mi_quang__Bun_bo_Hue.jpg,ai_visual_reviewed
+Pho,Hu tieu,5,outputs/label_verification/Pho__Hu_tieu.jpg,ai_visual_reviewed
+Banh canh,Bun mam,4,outputs/label_verification/Banh_canh__Bun_mam.jpg,ai_visual_reviewed
+Banh canh,Chao long,4,outputs/label_verification/Banh_canh__Chao_long.jpg,ai_visual_reviewed
+Banh cuon,Banh duc,4,outputs/label_verification/Banh_cuon__Banh_duc.jpg,ai_visual_reviewed
+Banh duc,Xoi xeo,4,outputs/label_verification/Banh_duc__Xoi_xeo.jpg,ai_visual_reviewed
+Bun bo Hue,Hu tieu,4,outputs/label_verification/Bun_bo_Hue__Hu_tieu.jpg,ai_visual_reviewed
+Chao long,Bun bo Hue,4,outputs/label_verification/Chao_long__Bun_bo_Hue.jpg,ai_visual_reviewed
+Banh canh,Canh chua,3,outputs/label_verification/Banh_canh__Canh_chua.jpg,ai_visual_reviewed
+Banh canh,Mi quang,3,outputs/label_verification/Banh_canh__Mi_quang.jpg,ai_visual_reviewed
+Banh canh,Pho,3,outputs/label_verification/Banh_canh__Pho.jpg,ai_visual_reviewed
+Bun rieu,Banh canh,3,outputs/label_verification/Bun_rieu__Banh_canh.jpg,ai_visual_reviewed
+Hu tieu,Bun mam,3,outputs/label_verification/Hu_tieu__Bun_mam.jpg,ai_visual_reviewed
+Pho,Banh canh,3,outputs/label_verification/Pho__Banh_canh.jpg,ai_visual_reviewed
+Pho,Bun rieu,3,outputs/label_verification/Pho__Bun_rieu.jpg,ai_visual_reviewed
+Pho,Canh chua,3,outputs/label_verification/Pho__Canh_chua.jpg,ai_visual_reviewed
+Banh bot loc,Hu tieu,2,outputs/label_verification/Banh_bot_loc__Hu_tieu.jpg,ai_visual_reviewed
+Banh duc,Banh bot loc,2,outputs/label_verification/Banh_duc__Banh_bot_loc.jpg,ai_visual_reviewed
+Banh duc,Banh gio,2,outputs/label_verification/Banh_duc__Banh_gio.jpg,ai_visual_reviewed
+Banh duc,Bun thit nuong,2,outputs/label_verification/Banh_duc__Bun_thit_nuong.jpg,ai_visual_reviewed
+Banh duc,Hu tieu,2,outputs/label_verification/Banh_duc__Hu_tieu.jpg,ai_visual_reviewed
+Bun bo Hue,Banh canh,2,outputs/label_verification/Bun_bo_Hue__Banh_canh.jpg,ai_visual_reviewed
+Bun bo Hue,Chao long,2,outputs/label_verification/Bun_bo_Hue__Chao_long.jpg,ai_visual_reviewed
+Bun bo Hue,Mi quang,2,outputs/label_verification/Bun_bo_Hue__Mi_quang.jpg,ai_visual_reviewed
+Canh chua,Bun bo Hue,2,outputs/label_verification/Canh_chua__Bun_bo_Hue.jpg,ai_visual_reviewed
+Chao long,Banh canh,2,outputs/label_verification/Chao_long__Banh_canh.jpg,ai_visual_reviewed
+Chao long,Hu tieu,2,outputs/label_verification/Chao_long__Hu_tieu.jpg,ai_visual_reviewed
+Chao long,Pho,2,outputs/label_verification/Chao_long__Pho.jpg,ai_visual_reviewed
+Hu tieu,Chao long,2,outputs/label_verification/Hu_tieu__Chao_long.jpg,ai_visual_reviewed
+Banh bot loc,Banh duc,1,outputs/label_verification/Banh_bot_loc__Banh_duc.jpg,ai_visual_reviewed
+Banh bot loc,Bun bo Hue,1,outputs/label_verification/Banh_bot_loc__Bun_bo_Hue.jpg,ai_visual_reviewed
+Banh can,Bun bo Hue,1,outputs/label_verification/Banh_can__Bun_bo_Hue.jpg,ai_visual_reviewed
+Banh canh,Banh duc,1,outputs/label_verification/Banh_canh__Banh_duc.jpg,ai_visual_reviewed
+Banh canh,Banh xeo,1,outputs/label_verification/Banh_canh__Banh_xeo.jpg,ai_visual_reviewed
+Banh canh,Bun thit nuong,1,outputs/label_verification/Banh_canh__Bun_thit_nuong.jpg,ai_visual_reviewed
+Banh duc,Banh khot,1,outputs/label_verification/Banh_duc__Banh_khot.jpg,ai_visual_reviewed
+Banh duc,Banh pia,1,outputs/label_verification/Banh_duc__Banh_pia.jpg,ai_visual_reviewed
+Banh duc,Bun dau mam tom,1,outputs/label_verification/Banh_duc__Bun_dau_mam_tom.jpg,ai_visual_reviewed
+Banh duc,Ca kho to,1,outputs/label_verification/Banh_duc__Ca_kho_to.jpg,ai_visual_reviewed
+Banh duc,Com tam,1,outputs/label_verification/Banh_duc__Com_tam.jpg,ai_visual_reviewed
+Banh duc,Goi cuon,1,outputs/label_verification/Banh_duc__Goi_cuon.jpg,ai_visual_reviewed
+Banh duc,Nem chua,1,outputs/label_verification/Banh_duc__Nem_chua.jpg,ai_visual_reviewed
+Banh mi,Pho,1,outputs/label_verification/Banh_mi__Pho.jpg,ai_visual_reviewed
+Banh pia,Banh duc,1,outputs/label_verification/Banh_pia__Banh_duc.jpg,ai_visual_reviewed
+Banh xeo,Banh canh,1,outputs/label_verification/Banh_xeo__Banh_canh.jpg,ai_visual_reviewed
+Bun bo Hue,Ca kho to,1,outputs/label_verification/Bun_bo_Hue__Ca_kho_to.jpg,ai_visual_reviewed
+Bun bo Hue,Canh chua,1,outputs/label_verification/Bun_bo_Hue__Canh_chua.jpg,ai_visual_reviewed
+Bun bo Hue,Cao lau,1,outputs/label_verification/Bun_bo_Hue__Cao_lau.jpg,ai_visual_reviewed
+Bun dau mam tom,Hu tieu,1,outputs/label_verification/Bun_dau_mam_tom__Hu_tieu.jpg,ai_visual_reviewed
+Bun mam,Hu tieu,1,outputs/label_verification/Bun_mam__Hu_tieu.jpg,ai_visual_reviewed
+Bun rieu,Hu tieu,1,outputs/label_verification/Bun_rieu__Hu_tieu.jpg,ai_visual_reviewed
+Bun thit nuong,Bun bo Hue,1,outputs/label_verification/Bun_thit_nuong__Bun_bo_Hue.jpg,ai_visual_reviewed
+Bun thit nuong,Hu tieu,1,outputs/label_verification/Bun_thit_nuong__Hu_tieu.jpg,ai_visual_reviewed
+Canh chua,Hu tieu,1,outputs/label_verification/Canh_chua__Hu_tieu.jpg,ai_visual_reviewed
+Cao lau,Banh duc,1,outputs/label_verification/Cao_lau__Banh_duc.jpg,ai_visual_reviewed
+Cao lau,Bun bo Hue,1,outputs/label_verification/Cao_lau__Bun_bo_Hue.jpg,ai_visual_reviewed
+Chao long,Banh duc,1,outputs/label_verification/Chao_long__Banh_duc.jpg,ai_visual_reviewed
+Com tam,Banh duc,1,outputs/label_verification/Com_tam__Banh_duc.jpg,ai_visual_reviewed
+Goi cuon,Hu tieu,1,outputs/label_verification/Goi_cuon__Hu_tieu.jpg,ai_visual_reviewed
+Hu tieu,Banh canh,1,outputs/label_verification/Hu_tieu__Banh_canh.jpg,ai_visual_reviewed
+Hu tieu,Banh duc,1,outputs/label_verification/Hu_tieu__Banh_duc.jpg,ai_visual_reviewed
+Hu tieu,Banh mi,1,outputs/label_verification/Hu_tieu__Banh_mi.jpg,ai_visual_reviewed
+Hu tieu,Bun thit nuong,1,outputs/label_verification/Hu_tieu__Bun_thit_nuong.jpg,ai_visual_reviewed
+Hu tieu,Cao lau,1,outputs/label_verification/Hu_tieu__Cao_lau.jpg,ai_visual_reviewed
+Hu tieu,Nem chua,1,outputs/label_verification/Hu_tieu__Nem_chua.jpg,ai_visual_reviewed
+Hu tieu,Xoi xeo,1,outputs/label_verification/Hu_tieu__Xoi_xeo.jpg,ai_visual_reviewed
+Mi quang,Pho,1,outputs/label_verification/Mi_quang__Pho.jpg,ai_visual_reviewed
+Pho,Bun mam,1,outputs/label_verification/Pho__Bun_mam.jpg,ai_visual_reviewed
+Pho,Bun thit nuong,1,outputs/label_verification/Pho__Bun_thit_nuong.jpg,ai_visual_reviewed
+Pho,Chao long,1,outputs/label_verification/Pho__Chao_long.jpg,ai_visual_reviewed
