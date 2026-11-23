@@ -82,3 +82,15 @@ def test_manifest_dataset_labels(tiny_data):
     dataset = train_arch.ManifestDataset(manifest["test"], manifest["classes"], root, eval_transform())
     labels = [dataset[i][1] for i in range(len(dataset))]
     assert labels == [0, 0, 1, 1]
+
+
+def test_calibrate_run_writes_temperature(tiny_data):
+    import torch
+    from colab import analyze
+    root, manifest, runs = tiny_data
+    run_dir = train_arch.train(replace(EXPERIMENTS["E1"], epochs=1, batch_size=2), runs, manifest, root, device="cpu")
+    report = analyze.calibrate_run(run_dir, manifest, root, "cpu")
+    assert report["fitted_on"] == "validation" and report["temperature"] >= 0.05
+    checkpoint = torch.load(run_dir / "best.pt", weights_only=True)
+    assert {"model_state", "classes", "arch", "temperature"} <= set(checkpoint)
+    assert analyze.misclassified_gallery(run_dir, root).is_file()
