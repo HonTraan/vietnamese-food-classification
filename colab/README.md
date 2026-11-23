@@ -33,7 +33,7 @@ My Drive/DL/vnfood_colab/
     └── _compare/              # bảng so sánh, biểu đồ, final.json
 ```
 
-Cần còn trống khoảng **6 GB** trên Drive (data khoảng 3 GB, checkpoint mỗi run 20–300 MB).
+Cần còn trống khoảng **9 GB** trên Drive (`raw.zip` khoảng 6 GB, checkpoint mỗi run 20–300 MB).
 
 ## Chạy trên Colab
 
