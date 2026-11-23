@@ -21,7 +21,7 @@ test_sync_writes_version() {
   setup_drive
   VNFOOD_DRIVE_ROOT="$TMP/vnfood_colab" bash "$SYNC" > "$TMP/out.txt" || fail "sync exited non-zero"
   local code="$TMP/vnfood_colab/code"
-  for key in version commit dirty synced_at; do
+  for key in version commit dirty synced_at content_hash; do
     grep -q "^$key=" "$code/VERSION.txt" || fail "VERSION.txt missing $key"
   done
   grep -q "^version=" "$TMP/out.txt" || fail "sync did not print version"

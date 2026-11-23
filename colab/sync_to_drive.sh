@@ -39,6 +39,7 @@ version="$(git -C "$REPO" rev-parse --short HEAD)${suffix}-$(date +%Y%m%d%H%M%S)
   echo "commit=$commit"
   echo "dirty=$dirty"
   echo "synced_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  echo "content_hash=$(cd "$REPO" && python3 -I -c 'import sys; sys.path.insert(0, "."); from colab.session import code_hash; print(code_hash("."))')"
 } > "$CODE_DIR/VERSION.txt"
 
 echo "Synced to $CODE_DIR"

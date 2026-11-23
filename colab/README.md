@@ -48,7 +48,7 @@ Mở notebook từ Drive (`My Drive/DL/vnfood_colab/code/colab/notebooks/…` �
 
 **Khi Colab bị ngắt:** mở lại notebook, chạy cell 0, cell 1, rồi chạy lại **đúng cell đang dở**. Run sẽ tiếp tục từ epoch đã lưu (`checkpoint_last.pt`). Run đã xong in `SKIP ... (DONE)`.
 
-**Kiểm tra version:** sau mỗi lần sync, lệnh in ra `version=<mã>`. Cell 0 trên Colab cũng in `version=...`. Hai mã phải giống nhau. Nếu khác, đợi Google Drive for Desktop đồng bộ xong rồi chạy lại cell 0.
+**Kiểm tra version:** `VERSION.txt` có `content_hash` (hash của toàn bộ file code). Cell 0 tự tính lại hash trên Colab và dừng nếu lệch. Lệch nghĩa là Google Drive for Desktop chưa upload xong: đợi 1–2 phút rồi chạy lại cell 0. Nếu code được sync lại trong lúc notebook đang mở, chọn *Runtime → Restart session* rồi chạy lại từ cell 0.
 
 ## Các thử nghiệm
 

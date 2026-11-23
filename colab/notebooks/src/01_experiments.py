@@ -8,7 +8,7 @@
 # %% [markdown]
 # ## 0. Chuẩn bị phiên Colab
 # Chạy cell này **mỗi lần mở notebook** (kể cả sau khi Colab bị ngắt). Nhớ bật GPU: *Runtime → Change runtime type → T4 GPU*.
-# So dòng `version=...` in ra với version Claude báo sau khi sync; nếu khác thì đợi Drive đồng bộ xong rồi chạy lại cell.
+# Cell tự kiểm tra code trên Colab khớp với bản Claude vừa sync (hash). Nếu Claude sync lại trong lúc notebook đang mở: *Runtime → Restart session* rồi chạy lại từ cell này.
 
 # %%
 from google.colab import drive
@@ -23,6 +23,11 @@ shutil.copytree(f"{DRIVE}/code", "/content/vnfood", dirs_exist_ok=True,
 !pip -q install datasets streamlit pytest
 sys.path.insert(0, "/content/vnfood")
 from colab import session
+expected = session.read_version(f"{DRIVE}/code/VERSION.txt")["content_hash"]
+actual = session.code_hash("/content/vnfood")
+assert actual == expected, (f"Code chưa đồng bộ xong (hash {actual} != {expected}). Đợi 1-2 phút rồi chạy lại cell này; "
+                            "nếu vẫn lệch: Runtime > Restart session rồi chạy lại.")
+print("Code khớp Drive, hash:", actual)
 print("GPU:", session.check_gpu())
 
 # %% [markdown]

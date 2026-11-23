@@ -22,6 +22,21 @@ def read_version(path: Path) -> dict[str, str]:
     return info
 
 
+CODE_PATTERNS = ("app.py", "src/**/*.py", "colab/**/*.py", "colab/**/*.sh")
+
+
+def code_hash(root: Path) -> str:
+    """sha256 over every code file (path + bytes); VERSION.txt alone cannot prove Drive finished syncing."""
+    import hashlib
+    root = Path(root)
+    files = {path for pattern in CODE_PATTERNS for path in root.glob(pattern)
+             if path.is_file() and "__pycache__" not in path.parts and "results" not in path.relative_to(root).parts[:2]}
+    digest = hashlib.sha256()
+    for path in sorted(files, key=lambda p: p.relative_to(root).as_posix()):
+        digest.update(path.relative_to(root).as_posix().encode() + b"\0" + path.read_bytes() + b"\0")
+    return digest.hexdigest()[:16]
+
+
 def compare_manifests(a: dict, b: dict) -> dict:
     """Compare two split manifests by the set of paths in each split."""
     only_in_a, only_in_b = {}, {}

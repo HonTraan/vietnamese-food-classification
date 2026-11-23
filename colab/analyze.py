@@ -18,7 +18,9 @@ from src.dataset import eval_transform
 
 def _logits(model, paths, classes, root, device):
     loader = DataLoader(ManifestDataset(paths, classes, root, eval_transform()), batch_size=64, num_workers=2)
-    return collect_logits(model, loader, device)
+    logits, labels = collect_logits(model, loader, device)
+    # collect_logits runs under inference_mode; clone so LBFGS can backprop through logits / temperature.
+    return logits.clone(), labels.clone()
 
 
 def calibrate_run(run_dir: Path, manifest: dict, root: Path, device) -> dict:

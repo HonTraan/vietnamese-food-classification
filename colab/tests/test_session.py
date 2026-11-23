@@ -47,3 +47,23 @@ def test_save_restore_roundtrip(tmp_path):
 
 def test_restore_without_data_returns_false(tmp_path):
     assert session.restore_data(tmp_path / "repo", tmp_path / "empty") is False
+
+
+def _code_tree(root):
+    for rel, text in {"src/train.py": "a", "colab/session.py": "b", "colab/sync_to_drive.sh": "c", "app.py": "d",
+                      "README.md": "not code", "colab/results/E1/metrics.json": "{}",
+                      "src/__pycache__/train.cpython-312.pyc": "x"}.items():
+        path = root / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+
+
+def test_code_hash_tracks_code_files_only(tmp_path):
+    _code_tree(tmp_path)
+    original = session.code_hash(tmp_path)
+    (tmp_path / "README.md").write_text("changed docs")
+    (tmp_path / "colab/results/E1/metrics.json").write_text('{"a": 1}')
+    (tmp_path / "src/__pycache__/train.cpython-312.pyc").write_text("y")
+    assert session.code_hash(tmp_path) == original
+    (tmp_path / "src/train.py").write_text("a2")
+    assert session.code_hash(tmp_path) != original
