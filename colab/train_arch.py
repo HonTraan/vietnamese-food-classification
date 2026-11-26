@@ -2,12 +2,14 @@
 
 Usage: python -m colab.train_arch --exp E4 --runs-dir /content/drive/MyDrive/DL/vnfood_colab/runs
        python -m colab.train_arch --tune T1 --runs-dir ...    (base from runs/tuning_base.json)
+       python -m colab.train_arch --control C1 --runs-dir ... (base re-run on this machine)
 """
 from __future__ import annotations
 
 import argparse
 import csv
 import json
+import os
 import random
 import time
 from datetime import datetime, timezone
@@ -21,8 +23,8 @@ from torch.optim import AdamW
 from torch.optim.lr_scheduler import CosineAnnealingLR, ReduceLROnPlateau
 from torch.utils.data import DataLoader, Dataset
 
-from colab import evaluation
-from colab.experiments import EXPERIMENTS, RunConfig, run_state, seed_runs, tuning
+from colab import evaluation, session
+from colab.experiments import EXPERIMENTS, RunConfig, control, run_state, seed_runs, tuning
 from colab.models_zoo import build, count_params, head
 from src.dataset import eval_transform, train_transform
 
@@ -57,7 +59,7 @@ def _seed_everything(seed: int) -> None:
 
 
 def _loader(paths, classes, root, transform, batch_size, shuffle, device) -> DataLoader:
-    workers = 2 if device.type == "cuda" else 0
+    workers = {"cuda": 2, "mps": int(os.environ.get("VNFOOD_WORKERS", 4))}.get(device.type, 0)
     return DataLoader(ManifestDataset(paths, classes, root, transform), batch_size=batch_size, shuffle=shuffle,
                       num_workers=workers, pin_memory=device.type == "cuda", persistent_workers=workers > 0)
 
@@ -90,6 +92,10 @@ def _validate(model, loader, criterion, device, use_amp, max_batches):
     return loss / total, correct / total
 
 
+def _device(device: str | None) -> torch.device:
+    return torch.device(device or session.choose_device(torch.cuda.is_available(), torch.backends.mps.is_available()))
+
+
 def train(cfg: RunConfig, runs_dir: Path, manifest: dict, root: Path, device: str | None = None,
           max_batches: int | None = None) -> Path:
     run_dir = Path(runs_dir) / cfg.run_id
@@ -98,7 +104,7 @@ def train(cfg: RunConfig, runs_dir: Path, manifest: dict, root: Path, device: st
         print(f"SKIP {cfg.run_id} (DONE)")
         return run_dir
     run_dir.mkdir(parents=True, exist_ok=True)
-    device = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
+    device = _device(device)
     use_amp = device.type == "cuda"
     _seed_everything(cfg.seed)
 
@@ -129,7 +135,7 @@ def train(cfg: RunConfig, runs_dir: Path, manifest: dict, root: Path, device: st
         (run_dir / "config.json").write_text(json.dumps({
             **cfg.to_dict(),
             "version": version_file.read_text(encoding="utf-8").strip() if version_file.is_file() else None,
-            "device": torch.cuda.get_device_name(0) if device.type == "cuda" else "cpu",
+            "device": session.device_label(device),
             "amp": use_amp,
             "started_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "train_size": len(manifest["train"]), "validation_size": len(manifest["validation"]),
@@ -187,6 +193,7 @@ def train(cfg: RunConfig, runs_dir: Path, manifest: dict, root: Path, device: st
     metrics = evaluation.evaluate_model(model, test_loader, device, classes)
     metrics.update({"run_id": cfg.run_id, "params": count_params(model), "train_seconds": train_seconds,
                     "best_val_accuracy": best, "best_epoch": checkpoint["epoch"], "epochs_run": len(history),
+                    "device": session.device_label(device),
                     **evaluation.measure_speed(model, device)})
     evaluation.write_artifacts(run_dir, metrics, history, classes)
     (run_dir / "DONE").write_text(datetime.now(timezone.utc).isoformat(timespec="seconds"), encoding="utf-8")
@@ -194,6 +201,42 @@ def train(cfg: RunConfig, runs_dir: Path, manifest: dict, root: Path, device: st
     print(f"DONE {cfg.run_id}: test_acc={metrics['test_accuracy']:.4f} macro_f1={metrics['macro_f1']:.4f} "
           f"top3={metrics['top3_accuracy']:.4f}")
     return run_dir
+
+
+def benchmark(cfg: RunConfig, manifest: dict, root: Path, device: str | None = None, batches: int = 30) -> dict:
+    """Time a few training steps on this machine and extrapolate to one run; writes nothing to runs/."""
+    device = _device(device)
+    use_amp = device.type == "cuda"
+    _seed_everything(cfg.seed)
+    loader = _loader(manifest["train"], manifest["classes"], root,
+                     train_transform() if cfg.augment else eval_transform(), cfg.batch_size, True, device)
+    model = build(cfg.arch, len(manifest["classes"]), pretrained=cfg.pretrained,
+                  freeze_backbone=cfg.freeze_backbone).to(device).train()
+    criterion = nn.CrossEntropyLoss(label_smoothing=cfg.label_smoothing)
+    optimizer = AdamW((p for p in model.parameters() if p.requires_grad), lr=cfg.lr, weight_decay=1e-4)
+    scaler = torch.amp.GradScaler("cuda", enabled=use_amp)
+    warmup, timed, started = 3, 0, None
+    while timed < batches:
+        for images, labels in loader:
+            if timed == 0 and warmup == 0:
+                evaluation.synchronize(device); started = time.perf_counter()
+            images, labels = images.to(device), labels.to(device)
+            optimizer.zero_grad(set_to_none=True)
+            with torch.autocast("cuda", dtype=torch.float16, enabled=use_amp):
+                loss = criterion(model(images), labels)
+            scaler.scale(loss).backward(); scaler.step(optimizer); scaler.update()
+            if warmup:
+                warmup -= 1
+                continue
+            timed += 1
+            if timed >= batches:
+                break
+    evaluation.synchronize(device)
+    per_batch = (time.perf_counter() - started) / batches
+    steps = len(manifest["train"]) / cfg.batch_size + 0.4 * len(manifest["validation"]) / cfg.batch_size
+    epoch_minutes = per_batch * steps / 60
+    return {"device": session.device_label(device), "seconds_per_batch": per_batch,
+            "est_epoch_minutes": epoch_minutes, "est_run_hours": epoch_minutes * cfg.epochs / 60}
 
 
 def _base_from_pin(runs_dir: Path) -> RunConfig:
@@ -209,6 +252,7 @@ def main() -> None:
     which.add_argument("--exp", choices=list(EXPERIMENTS))
     which.add_argument("--tune", choices=["T1", "T2", "T3", "T4a", "T4b", "T5"])
     which.add_argument("--seed-run", choices=["S123", "S2024"])
+    which.add_argument("--control", choices=["C1"])
     parser.add_argument("--runs-dir", type=Path, required=True)
     parser.add_argument("--root", type=Path, default=REPO)
     parser.add_argument("--manifest", type=Path, default=REPO / "outputs" / "clean_split_manifest.json")
@@ -217,6 +261,8 @@ def main() -> None:
         cfg = EXPERIMENTS[args.exp]
     elif args.tune:
         cfg = tuning(_base_from_pin(args.runs_dir))[args.tune]
+    elif args.control:
+        cfg = control(_base_from_pin(args.runs_dir))[args.control]
     else:
         cfg = seed_runs(_base_from_pin(args.runs_dir))[args.seed_run]
     manifest = json.loads(args.manifest.read_text(encoding="utf-8"))

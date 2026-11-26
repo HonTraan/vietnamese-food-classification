@@ -1,5 +1,5 @@
 from colab import experiments
-from colab.experiments import EXPERIMENTS, run_state, seed_runs, tuning
+from colab.experiments import EXPERIMENTS, control, run_state, seed_runs, tuning
 
 
 def test_experiment_ids():
@@ -48,4 +48,14 @@ def test_run_state(tmp_path):
 
 def test_priority_covers_registry():
     assert experiments.PRIORITY[:2] == ["E1", "E4"]
-    assert set(experiments.PRIORITY) == set(EXPERIMENTS) | {"T1", "T2", "T3", "T4a", "T4b", "T5"}
+    assert set(experiments.PRIORITY) == set(EXPERIMENTS) | {"C1", "T1", "T2", "T3", "T4a", "T4b", "T5"}
+    assert experiments.PRIORITY.index("C1") < experiments.PRIORITY.index("T1")
+
+
+def test_control_differs_only_in_run_id():
+    base = EXPERIMENTS["E2"]
+    runs = control(base)
+    assert list(runs) == ["C1"]
+    assert runs["C1"].run_id == "C1_resnet50_m4"
+    strip = lambda cfg: {k: v for k, v in cfg.to_dict().items() if k != "run_id"}
+    assert strip(runs["C1"]) == strip(base)

@@ -73,11 +73,63 @@ def compare_manifests(a: dict, b: dict) -> dict:
     }
 
 
+def device_label(device) -> str:
+    """Human-readable accelerator name stored in config.json / metrics.json."""
+    import subprocess
+    kind = getattr(device, "type", str(device))
+    if kind == "cuda":
+        import torch
+        return torch.cuda.get_device_name(0)
+    if kind == "mps":
+        try:
+            chip = subprocess.run(["sysctl", "-n", "machdep.cpu.brand_string"], capture_output=True, text=True,
+                                  check=True).stdout.strip()
+        except (OSError, subprocess.CalledProcessError):
+            return "mps"
+        return f"mps ({chip})" if chip else "mps"
+    return "cpu"
+
+
 def check_gpu() -> str:
     import torch
-    if not torch.cuda.is_available():
+    device = choose_device(torch.cuda.is_available(), torch.backends.mps.is_available())
+    if device == "cpu":
         raise RuntimeError("Chưa bật GPU: Runtime > Change runtime type > T4 GPU")
-    return torch.cuda.get_device_name(0)
+    return device_label(device)
+
+
+def _torch_device() -> str:
+    try:
+        import torch
+    except ImportError:
+        return "cpu"
+    return choose_device(torch.cuda.is_available(), torch.backends.mps.is_available())
+
+
+def start(repo: Path, on_colab: bool) -> dict:
+    """Second half of every notebook's cell 0 (the first half mounts Drive / finds the repo)."""
+    import subprocess
+    import sys
+    repo = Path(repo)
+    root = drive_root(on_colab)
+    os.chdir(repo)
+    if on_colab:
+        print(Path(root / "code" / "VERSION.txt").read_text(encoding="utf-8"))
+        subprocess.run([sys.executable, "-m", "pip", "-q", "install", "datasets", "streamlit", "pytest"], check=True)
+        expected = read_version(root / "code" / "VERSION.txt")["content_hash"]
+        actual = code_hash(repo)
+        assert actual == expected, (f"Code chưa đồng bộ xong (hash {actual} != {expected}). Đợi 1-2 phút rồi chạy "
+                                    "lại cell này; nếu vẫn lệch: Runtime > Restart session rồi chạy lại.")
+        print("Code khớp Drive, hash:", actual)
+        print("GPU:", check_gpu())
+        manifest = repo / "outputs" / MANIFEST_NAME
+    else:
+        manifest = repo / "data" / MANIFEST_NAME
+    device = _torch_device()
+    print("Runs:", root / "runs")
+    print("Thiết bị:", device_label(device) if device != "cpu" else "cpu (không có GPU!)")
+    return {"on_colab": on_colab, "repo": repo, "runs": root / "runs", "data": root / "data",
+            "manifest": manifest, "device": device}
 
 
 def save_data(repo: Path = REPO, data_dir: Path = DATA_DIR) -> None:

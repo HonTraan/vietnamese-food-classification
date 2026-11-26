@@ -1,4 +1,4 @@
-"""Registry of the Colab experiments (E* architectures, T* tuning, S* extra seeds)."""
+"""Registry of the experiments (E* architectures, C1 local control, T* tuning, S* extra seeds)."""
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, replace
@@ -36,7 +36,7 @@ EXPERIMENTS: dict[str, RunConfig] = {
     "E5": _exp("E5", "convnext_tiny"),
 }
 
-PRIORITY = ["E1", "E4", "E2", "E3", "T1", "T3", "T2", "T4a", "T4b", "T5", "E5"]
+PRIORITY = ["E1", "E4", "E2", "E3", "C1", "T1", "T3", "T2", "T4a", "T4b", "T5", "E5"]
 
 
 def tuning(base: RunConfig) -> dict[str, RunConfig]:
@@ -49,6 +49,11 @@ def tuning(base: RunConfig) -> dict[str, RunConfig]:
         "T4b": replace(base, run_id=f"T4b_{arch}_lr1e-4", lr=1e-4),
         "T5": replace(base, run_id=f"T5_{arch}_ls0.1", label_smoothing=0.1),
     }
+
+
+def control(base: RunConfig) -> dict[str, RunConfig]:
+    """Base recipe re-run on the Mac (mps, fp32): T* run there are compared against it, not the T4 base."""
+    return {"C1": replace(base, run_id=f"C1_{base.arch}_m4")}
 
 
 def seed_runs(base: RunConfig, seeds: tuple[int, ...] = (123, 2024)) -> dict[str, RunConfig]:

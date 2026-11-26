@@ -94,3 +94,21 @@ def test_calibrate_run_writes_temperature(tiny_data):
     checkpoint = torch.load(run_dir / "best.pt", weights_only=True)
     assert {"model_state", "classes", "arch", "temperature"} <= set(checkpoint)
     assert analyze.misclassified_gallery(run_dir, root).is_file()
+
+
+def test_config_and_metrics_record_device(tiny_data):
+    root, manifest, runs = tiny_data
+    cfg = replace(EXPERIMENTS["E1"], epochs=1, batch_size=2)
+    run_dir = train_arch.train(cfg, runs, manifest, root, device="cpu")
+    assert json.loads((run_dir / "config.json").read_text())["device"] == "cpu"
+    assert json.loads((run_dir / "metrics.json").read_text())["device"] == "cpu"
+
+
+def test_benchmark_returns_estimates(tiny_data):
+    root, manifest, runs = tiny_data
+    cfg = replace(EXPERIMENTS["E1"], batch_size=2)
+    result = train_arch.benchmark(cfg, manifest, root, device="cpu", batches=4)
+    assert result["device"] == "cpu"
+    for key in ("seconds_per_batch", "est_epoch_minutes", "est_run_hours"):
+        assert result[key] > 0, key
+    assert not runs.exists()

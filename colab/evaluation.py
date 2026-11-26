@@ -52,20 +52,29 @@ def evaluate_model(model, loader, device, classes: list[str], temperature: float
     }
 
 
+def synchronize(device) -> None:
+    device = torch.device(device)
+    if device.type == "cuda":
+        torch.cuda.synchronize()
+    elif device.type == "mps":
+        torch.mps.synchronize()
+
+
 @torch.inference_mode()
 def measure_speed(model, device) -> dict:
+    """gpu_images_per_sec is measured on the accelerator (cuda or mps); see metrics["device"] for which."""
     device = torch.device(device)
     gpu_rate = None
-    if device.type == "cuda":
+    if device.type in ("cuda", "mps"):
         model.eval()
         batch = torch.randn(32, 3, 224, 224, device=device)
         for _ in range(5):
             model(batch)
-        torch.cuda.synchronize()
+        synchronize(device)
         start = time.perf_counter()
         for _ in range(20):
             model(batch)
-        torch.cuda.synchronize()
+        synchronize(device)
         gpu_rate = 20 * 32 / (time.perf_counter() - start)
     cpu_model = copy.deepcopy(model).cpu().eval()
     image = torch.randn(1, 3, 224, 224)
