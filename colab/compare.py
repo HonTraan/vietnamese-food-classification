@@ -11,7 +11,7 @@ from pathlib import Path
 from colab.experiments import EXPERIMENTS, PRIORITY, RunConfig
 
 FIELDS = ["run_id", "exp", "arch", "pretrained", "freeze_backbone", "augment", "lr", "label_smoothing", "seed",
-          "best_val_accuracy", "test_accuracy", "macro_f1", "top3_accuracy", "params", "train_seconds",
+          "device", "best_val_accuracy", "test_accuracy", "macro_f1", "top3_accuracy", "params", "train_seconds",
           "gpu_images_per_sec", "cpu_ms_per_image"]
 REQUIRED_FOR_TUNING = ("E1", "E2", "E3", "E4")
 
@@ -29,8 +29,8 @@ def collect(runs_dir: Path) -> list[dict]:
         config = json.loads((run_dir / "config.json").read_text(encoding="utf-8"))
         metrics = json.loads((run_dir / "metrics.json").read_text(encoding="utf-8"))
         row = {"run_id": run_dir.name, "exp": run_dir.name.split("_")[0]}
-        row.update({key: config.get(key) for key in FIELDS[2:9]})
-        row.update({key: metrics.get(key) for key in FIELDS[9:]})
+        row.update({key: config.get(key) for key in FIELDS[2:10]})
+        row.update({key: metrics.get(key) for key in FIELDS[10:]})
         row["run_dir"] = str(run_dir)
         rows.append(row)
     return sorted(rows, key=_order)
@@ -60,6 +60,18 @@ def pin_tuning_base(runs_dir: Path, rows: list[dict]) -> RunConfig:
     pin.write_text(json.dumps({"base_exp": best["exp"], "run_id": best["run_id"], "config": base.to_dict(),
                                "best_val_accuracy": best["best_val_accuracy"]}, indent=2), encoding="utf-8")
     return base
+
+
+def tuning_reference(rows: list[dict], runs_dir: Path) -> dict | None:
+    """The bar T* runs are compared with: the C1 control (same machine) once done, else the pinned base."""
+    control = [row for row in rows if row["exp"] == "C1"]
+    if control:
+        return control[0]
+    pin = Path(runs_dir) / "tuning_base.json"
+    if not pin.is_file():
+        return None
+    base_id = json.loads(pin.read_text(encoding="utf-8"))["run_id"]
+    return next((row for row in rows if row["run_id"] == base_id), None)
 
 
 def write_comparison(rows: list[dict], out_dir: Path, plots: bool = True) -> None:
@@ -104,11 +116,10 @@ def _plot(rows: list[dict], out_dir: Path) -> None:
         axis.set(xlabel="Epoch", ylabel="Validation accuracy", title="Learning curves (validation)"); axis.legend()
         figure.tight_layout(); figure.savefig(out_dir / "learning_curves_all.png", dpi=150); plt.close(figure)
 
-    pin = Path(rows[0]["run_dir"]).parent / "tuning_base.json" if rows else None
     tuning_rows = [row for row in rows if row["exp"].startswith("T")]
-    if tuning_rows and pin and pin.is_file():
-        base_id = json.loads(pin.read_text(encoding="utf-8"))["run_id"]
-        shown = [row for row in rows if row["run_id"] == base_id] + tuning_rows
+    reference = tuning_reference(rows, Path(rows[0]["run_dir"]).parent) if rows else None
+    if tuning_rows and reference:
+        shown = [reference] + tuning_rows
         figure, axis = plt.subplots(figsize=(9, 4.5))
         axis.barh([row["run_id"] for row in shown], [row["test_accuracy"] for row in shown])
         axis.set(xlabel="Test accuracy", title="Tinh chỉnh so với cấu hình chuẩn"); axis.set_xlim(0, 1)

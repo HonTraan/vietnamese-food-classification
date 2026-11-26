@@ -5,13 +5,15 @@ from colab import compare
 from colab.experiments import EXPERIMENTS
 
 
-def _run(runs, run_id, val, test, macro=0.5, done=True, arch=None):
+def _run(runs, run_id, val, test, macro=0.5, done=True, arch=None, device=None):
     run_dir = runs / run_id
     run_dir.mkdir(parents=True)
     exp = run_id.split("_")[0]
     config = EXPERIMENTS[exp].to_dict() if exp in EXPERIMENTS else {**EXPERIMENTS["E4"].to_dict(), "run_id": run_id}
     if arch:
         config["arch"] = arch
+    if device:
+        config["device"] = device
     (run_dir / "config.json").write_text(json.dumps(config))
     (run_dir / "metrics.json").write_text(json.dumps({
         "best_val_accuracy": val, "test_accuracy": test, "macro_f1": macro, "top3_accuracy": 0.9,
@@ -78,3 +80,27 @@ def test_write_comparison_creates_csv(tmp_path):
         rows = list(csv.DictReader(file))
     assert [row["run_id"] for row in rows] == ["E1_cnn", "E4_efficientnet_b0"]
     assert list(rows[0])[:3] == ["run_id", "exp", "arch"]
+
+
+def test_collect_has_device(tmp_path):
+    _run(tmp_path, "E1_cnn", 0.6, 0.6, device="Tesla T4")
+    row = compare.collect(tmp_path)[0]
+    assert row["device"] == "Tesla T4"
+    assert compare.FIELDS.index("device") == compare.FIELDS.index("seed") + 1
+
+
+def test_tuning_reference_prefers_control(tmp_path):
+    _four_done(tmp_path, e4_val=0.8)
+    compare.pin_tuning_base(tmp_path, compare.collect(tmp_path))
+    _run(tmp_path, "C1_resnet50_m4", 0.84, 0.84, arch="resnet50", device="mps (Apple M4 Pro)")
+    _run(tmp_path, "T1_resnet50_frozen", 0.7, 0.7, arch="resnet50")
+    assert compare.tuning_reference(compare.collect(tmp_path), tmp_path)["run_id"] == "C1_resnet50_m4"
+
+
+def test_tuning_reference_falls_back_to_base(tmp_path):
+    _four_done(tmp_path, e4_val=0.8)
+    rows = compare.collect(tmp_path)
+    assert compare.tuning_reference(rows, tmp_path) is None
+    base = compare.pin_tuning_base(tmp_path, rows)
+    _run(tmp_path, "C1_resnet50_m4", 0.84, 0.84, arch="resnet50", done=False)
+    assert compare.tuning_reference(compare.collect(tmp_path), tmp_path)["run_id"] == base.run_id
