@@ -54,8 +54,14 @@ test_pull_skips_pt() {
   [[ ! -e "$TMP/results/E1_cnn/best.pt" ]] || fail "best.pt should not be pulled"
 }
 
+test_setup_local_dry_run() {
+  bash "$HERE/setup_local.sh" --dry-run > "$TMP/setup.txt" 2>&1 || fail "setup_local --dry-run exited non-zero"
+  grep -q "uv venv --python 3.12" "$TMP/setup.txt" || fail "dry run missing uv venv"
+  grep -q "ipykernel install" "$TMP/setup.txt" || fail "dry run missing ipykernel install"
+}
+
 passed=0
-for t in test_sync_writes_version test_sync_keeps_runs test_sync_refuses_wrong_target test_pull_skips_pt; do
+for t in test_sync_writes_version test_sync_keeps_runs test_sync_refuses_wrong_target test_pull_skips_pt test_setup_local_dry_run; do
   "$t"
   passed=$((passed + 1))
 done
