@@ -67,3 +67,73 @@ def test_code_hash_tracks_code_files_only(tmp_path):
     assert session.code_hash(tmp_path) == original
     (tmp_path / "src/train.py").write_text("a2")
     assert session.code_hash(tmp_path) != original
+
+
+def _raises(fn, error):
+    try:
+        fn()
+    except error as exc:
+        return exc
+    raise AssertionError(f"{fn} did not raise {error.__name__}")
+
+
+def _mirror(home, account):
+    path = home / "Library" / "CloudStorage" / f"GoogleDrive-{account}" / "My Drive" / "DL" / "vnfood_colab"
+    path.mkdir(parents=True)
+    return path
+
+
+def test_drive_root_colab(tmp_path):
+    assert session.drive_root(True, env={}, home=tmp_path) == session.DRIVE_ROOT
+
+
+def test_drive_root_env_override(tmp_path):
+    env = {"VNFOOD_DRIVE_ROOT": str(tmp_path / "custom" / "vnfood_colab")}
+    assert session.drive_root(False, env=env, home=tmp_path) == tmp_path / "custom" / "vnfood_colab"
+
+
+def test_drive_root_finds_mirror(tmp_path):
+    mirror = _mirror(tmp_path, "a@x")
+    assert session.drive_root(False, env={}, home=tmp_path) == mirror
+
+
+def test_drive_root_requires_single_mirror(tmp_path):
+    error = _raises(lambda: session.drive_root(False, env={}, home=tmp_path), RuntimeError)
+    assert "VNFOOD_DRIVE_ROOT" in str(error)
+    _mirror(tmp_path, "a@x"), _mirror(tmp_path, "b@x")
+    error = _raises(lambda: session.drive_root(False, env={}, home=tmp_path), RuntimeError)
+    assert "VNFOOD_DRIVE_ROOT" in str(error)
+
+
+def test_choose_device_order():
+    assert session.choose_device(True, True) == "cuda"
+    assert session.choose_device(False, True) == "mps"
+    assert session.choose_device(False, False) == "cpu"
+
+
+def _saved_data(tmp_path):
+    repo, data_dir = tmp_path / "repo", tmp_path / "drive_data"
+    (repo / "data" / "raw" / "A").mkdir(parents=True)
+    (repo / "data" / "raw" / "A" / "x.jpg").write_bytes(b"jpeg")
+    (repo / "outputs").mkdir()
+    (repo / "outputs" / "clean_split_manifest.json").write_text(json.dumps(_manifest()))
+    session.save_data(repo, data_dir)
+    return data_dir
+
+
+def test_restore_local_manifest_leaves_outputs_alone(tmp_path):
+    data_dir, fresh = _saved_data(tmp_path), tmp_path / "fresh"
+    target = fresh / "data" / session.MANIFEST_NAME
+    assert session.restore_data(fresh, data_dir, manifest_dst=target) is True
+    assert json.loads(target.read_text()) == _manifest()
+    assert not (fresh / "outputs").exists()
+
+
+def test_restore_recovers_from_interrupted_extract(tmp_path):
+    data_dir, fresh = _saved_data(tmp_path), tmp_path / "fresh"
+    (fresh / "data" / ".extract" / "raw").mkdir(parents=True)
+    (fresh / "data" / ".extract" / "raw" / "junk.jpg").write_bytes(b"junk")
+    assert session.restore_data(fresh, data_dir) is True
+    assert (fresh / "data" / "raw" / "A" / "x.jpg").read_bytes() == b"jpeg"
+    assert not (fresh / "data" / "raw" / "junk.jpg").exists()
+    assert not (fresh / "data" / ".extract").exists()

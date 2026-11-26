@@ -1,8 +1,10 @@
 """Paths and per-session helpers shared by every Colab notebook."""
 from __future__ import annotations
 
+import os
 import shutil
 import zipfile
+from collections.abc import Mapping
 from pathlib import Path
 
 DRIVE_ROOT = Path("/content/drive/MyDrive/DL/vnfood_colab")
@@ -35,6 +37,23 @@ def code_hash(root: Path) -> str:
     for path in sorted(files, key=lambda p: p.relative_to(root).as_posix()):
         digest.update(path.relative_to(root).as_posix().encode() + b"\0" + path.read_bytes() + b"\0")
     return digest.hexdigest()[:16]
+
+
+def drive_root(on_colab: bool, env: Mapping[str, str] = os.environ, home: Path = Path.home()) -> Path:
+    """vnfood_colab on Drive: the Colab mount, VNFOOD_DRIVE_ROOT, or the single Drive for Desktop mirror."""
+    if on_colab:
+        return DRIVE_ROOT
+    if env.get("VNFOOD_DRIVE_ROOT"):
+        return Path(env["VNFOOD_DRIVE_ROOT"])
+    found = sorted(Path(home).glob("Library/CloudStorage/GoogleDrive-*/My Drive/DL/vnfood_colab"))
+    if len(found) != 1:
+        raise RuntimeError(f"Cần đúng một thư mục vnfood_colab của Drive for Desktop (tìm thấy {len(found)}); "
+                           "bật Drive for Desktop hoặc đặt VNFOOD_DRIVE_ROOT.")
+    return found[0]
+
+
+def choose_device(cuda: bool, mps: bool) -> str:
+    return "cuda" if cuda else "mps" if mps else "cpu"
 
 
 def compare_manifests(a: dict, b: dict) -> dict:
@@ -74,16 +93,24 @@ def save_data(repo: Path = REPO, data_dir: Path = DATA_DIR) -> None:
     shutil.copy2(repo / "outputs" / MANIFEST_NAME, data_dir / MANIFEST_NAME)
 
 
-def restore_data(repo: Path = REPO, data_dir: Path = DATA_DIR) -> bool:
-    """Unpack Drive data into the local repo copy; False when notebook 00 has not run yet."""
+def restore_data(repo: Path = REPO, data_dir: Path = DATA_DIR, manifest_dst: Path | None = None) -> bool:
+    """Unpack Drive data into the repo copy; False when notebook 00 has not run yet.
+
+    Extracts into data/.extract first so an interrupted unpack is never mistaken for a complete data/raw.
+    """
     archive_path = data_dir / "raw.zip"
     if not archive_path.is_file():
         return False
     target = repo / "data"
     if not (target / "raw").is_dir():
-        target.mkdir(parents=True, exist_ok=True)
+        staging = target / ".extract"
+        shutil.rmtree(staging, ignore_errors=True)
+        staging.mkdir(parents=True)
         with zipfile.ZipFile(archive_path) as archive:
-            archive.extractall(target)
-    (repo / "outputs").mkdir(parents=True, exist_ok=True)
-    shutil.copy2(data_dir / MANIFEST_NAME, repo / "outputs" / MANIFEST_NAME)
+            archive.extractall(staging)
+        (staging / "raw").replace(target / "raw")
+        shutil.rmtree(staging)
+    manifest_dst = Path(manifest_dst) if manifest_dst else repo / "outputs" / MANIFEST_NAME
+    manifest_dst.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(data_dir / MANIFEST_NAME, manifest_dst)
     return True
