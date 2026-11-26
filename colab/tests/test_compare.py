@@ -104,3 +104,28 @@ def test_tuning_reference_falls_back_to_base(tmp_path):
     base = compare.pin_tuning_base(tmp_path, rows)
     _run(tmp_path, "C1_resnet50_m4", 0.84, 0.84, arch="resnet50", done=False)
     assert compare.tuning_reference(compare.collect(tmp_path), tmp_path)["run_id"] == base.run_id
+
+
+def _tuned(runs):
+    _four_done(runs, e4_val=0.8)
+    base = compare.pin_tuning_base(runs, compare.collect(runs))
+    _run(runs, "C1_resnet50_m4", 0.84, 0.83, arch="resnet50", device="mps (Apple M4 Pro)")
+    _run(runs, "T1_resnet50_frozen", 0.70, 0.71, arch="resnet50", device="mps (Apple M4 Pro)")
+    _run(runs, "T3_resnet50_noaug", 0.80, 0.79, arch="resnet50", device="Tesla T4")
+    return base
+
+
+def test_tuning_deltas_use_same_device_reference(tmp_path):
+    base = _tuned(tmp_path)
+    deltas = {row["run_id"]: row for row in compare.tuning_deltas(compare.collect(tmp_path), tmp_path)}
+    assert deltas["T1_resnet50_frozen"]["reference"] == "C1_resnet50_m4"
+    assert abs(deltas["T1_resnet50_frozen"]["delta_test"] - (0.71 - 0.83)) < 1e-9
+    assert deltas["T3_resnet50_noaug"]["reference"] == base.run_id
+
+
+def test_hardware_effect(tmp_path):
+    base = _tuned(tmp_path)
+    effect = compare.hardware_effect(compare.collect(tmp_path), tmp_path)
+    assert effect["base"] == base.run_id and effect["control"] == "C1_resnet50_m4"
+    base_row = next(r for r in compare.collect(tmp_path) if r["run_id"] == base.run_id)
+    assert abs(effect["delta_test"] - (base_row["test_accuracy"] - 0.83)) < 1e-9

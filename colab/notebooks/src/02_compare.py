@@ -19,7 +19,7 @@ if ON_COLAB:
     import shutil
     shutil.copytree("/content/drive/MyDrive/DL/vnfood_colab/code", "/content/vnfood", dirs_exist_ok=True,
                     ignore=shutil.ignore_patterns("data", "models"))
-    REPO = REPO
+    REPO = Path("/content/vnfood")
 else:
     REPO = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / "colab" / "session.py").is_file())
 sys.path.insert(0, str(REPO))
@@ -39,6 +39,13 @@ rows = compare.collect(RUNS)
 out = RUNS / "_compare"
 compare.write_comparison(rows, out)
 pd.DataFrame(rows).drop(columns=["run_dir"]).round(4)
+
+# %%
+effect = compare.hardware_effect(rows, RUNS)
+if effect:
+    print(f"Ảnh hưởng phần cứng: {effect['base']} ({effect['base_device']}) − {effect['control']} ({effect['control_device']}): "
+          f"val {effect['delta_val'] * 100:+.2f}, test {effect['delta_test'] * 100:+.2f} điểm %")
+pd.DataFrame(compare.tuning_deltas(rows, RUNS)).round(4)
 
 # %%
 for name in ("comparison_arch.png", "accuracy_vs_params.png", "learning_curves_all.png", "tuning.png"):

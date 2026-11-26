@@ -92,6 +92,17 @@ def _validate(model, loader, criterion, device, use_amp, max_batches):
     return loss / total, correct / total
 
 
+def _local_version() -> str:
+    """Running from the repo itself (Mac): no VERSION.txt, so record the commit and the code hash directly."""
+    import subprocess
+    try:
+        commit = subprocess.run(["git", "-C", str(REPO), "rev-parse", "HEAD"], capture_output=True, text=True,
+                                check=True).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        commit = "unknown"
+    return f"local commit={commit}\ncontent_hash={session.code_hash(REPO)}"
+
+
 def _device(device: str | None) -> torch.device:
     return torch.device(device or session.choose_device(torch.cuda.is_available(), torch.backends.mps.is_available()))
 
@@ -124,9 +135,15 @@ def train(cfg: RunConfig, runs_dir: Path, manifest: dict, root: Path, device: st
 
     start_epoch, best, stale, history, train_seconds = 1, -1.0, 0, [], 0.0
     if state == "resume":
+        started_on = json.loads((run_dir / "config.json").read_text(encoding="utf-8")).get("device")
+        if started_on != session.device_label(device):
+            raise SystemExit(f"{cfg.run_id} bắt đầu trên {started_on}, không chạy tiếp trên {session.device_label(device)}: "
+                             "một run phải chạy trọn trên một phần cứng. Chạy tiếp ở máy cũ, hoặc xoá thư mục run để chạy lại.")
         last = torch.load(run_dir / "checkpoint_last.pt", map_location=device, weights_only=True)
         model.load_state_dict(last["model_state"]); optimizer.load_state_dict(last["optimizer_state"])
-        scheduler.load_state_dict(last["scheduler_state"]); scaler.load_state_dict(last["scaler_state"])
+        scheduler.load_state_dict(last["scheduler_state"])
+        if last["scaler_state"]:
+            scaler.load_state_dict(last["scaler_state"])
         start_epoch, best, stale = last["epoch"] + 1, last["best_val_accuracy"], last["stale_epochs"]
         history, train_seconds = last["history"], last["train_seconds"]
         print(f"RESUME {cfg.run_id} from epoch {start_epoch}; best val={best:.4f}")
@@ -134,7 +151,7 @@ def train(cfg: RunConfig, runs_dir: Path, manifest: dict, root: Path, device: st
         version_file = REPO / "VERSION.txt"
         (run_dir / "config.json").write_text(json.dumps({
             **cfg.to_dict(),
-            "version": version_file.read_text(encoding="utf-8").strip() if version_file.is_file() else None,
+            "version": version_file.read_text(encoding="utf-8").strip() if version_file.is_file() else _local_version(),
             "device": session.device_label(device),
             "amp": use_amp,
             "started_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),

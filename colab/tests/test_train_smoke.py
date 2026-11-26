@@ -112,3 +112,29 @@ def test_benchmark_returns_estimates(tiny_data):
     for key in ("seconds_per_batch", "est_epoch_minutes", "est_run_hours"):
         assert result[key] > 0, key
     assert not runs.exists()
+
+
+def test_resume_refuses_other_device(tiny_data, monkeypatch):
+    root, manifest, runs = tiny_data
+    cfg = replace(EXPERIMENTS["E1"], epochs=2, batch_size=2)
+
+    def interrupt(epoch):
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(train_arch, "_after_epoch", interrupt)
+    with pytest.raises(KeyboardInterrupt):
+        train_arch.train(cfg, runs, manifest, root, device="cpu", max_batches=1)
+    config_path = runs / cfg.run_id / "config.json"
+    config_path.write_text(json.dumps({**json.loads(config_path.read_text()), "device": "Tesla T4"}))
+    monkeypatch.setattr(train_arch, "_after_epoch", lambda epoch: None)
+    with pytest.raises(SystemExit, match="Tesla T4"):
+        train_arch.train(cfg, runs, manifest, root, device="cpu", max_batches=1)
+    assert not (runs / cfg.run_id / "DONE").exists()
+
+
+def test_config_records_code_version_without_version_file(tiny_data):
+    root, manifest, runs = tiny_data
+    cfg = replace(EXPERIMENTS["E1"], epochs=1, batch_size=2)
+    run_dir = train_arch.train(cfg, runs, manifest, root, device="cpu", max_batches=1)
+    version = json.loads((run_dir / "config.json").read_text())["version"]
+    assert version and "content_hash=" in version

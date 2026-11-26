@@ -172,3 +172,16 @@ def test_notebook_shell_calls_are_safe():
                 assert '"{sys.executable}"' in line, (source.name, line)
             for name in re.findall(r"\{(RUNS|MANIFEST|REPO)\}", line):
                 assert f'"{{{name}}}"' in line, (source.name, line)
+
+
+def _cell0(source):
+    text = source.read_text(encoding="utf-8")
+    start = text.index("ON_COLAB = ")
+    return text[start:text.index("RUNS, MANIFEST, DEVICE", start)]
+
+
+def test_cell0_identical_in_notebooks():
+    sources = sorted((session.REPO / "colab" / "notebooks" / "src").glob("0[123]_*.py"))
+    cells = {_cell0(source) for source in sources}
+    assert len(cells) == 1, "cell 0 differs between notebooks"
+    assert 'REPO = Path("/content/vnfood")' in cells.pop()

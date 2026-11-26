@@ -74,6 +74,49 @@ def tuning_reference(rows: list[dict], runs_dir: Path) -> dict | None:
     return next((row for row in rows if row["run_id"] == base_id), None)
 
 
+def _same_device_reference(row: dict, rows: list[dict], runs_dir: Path) -> dict | None:
+    if str(row.get("device") or "").startswith("mps"):
+        control = [other for other in rows if other["exp"] == "C1"]
+        if control:
+            return control[0]
+    pin = Path(runs_dir) / "tuning_base.json"
+    if not pin.is_file():
+        return None
+    base_id = json.loads(pin.read_text(encoding="utf-8"))["run_id"]
+    return next((other for other in rows if other["run_id"] == base_id), None)
+
+
+def tuning_deltas(rows: list[dict], runs_dir: Path) -> list[dict]:
+    """Each T* run minus its reference on the same hardware (C1 for mps runs, the pinned base for T4 runs)."""
+    deltas = []
+    for row in rows:
+        if not row["exp"].startswith("T"):
+            continue
+        reference = _same_device_reference(row, rows, runs_dir)
+        if reference is None:
+            continue
+        deltas.append({"run_id": row["run_id"], "device": row.get("device"), "reference": reference["run_id"],
+                       "delta_val": row["best_val_accuracy"] - reference["best_val_accuracy"],
+                       "delta_test": row["test_accuracy"] - reference["test_accuracy"]})
+    return deltas
+
+
+def hardware_effect(rows: list[dict], runs_dir: Path) -> dict | None:
+    """Pinned base (Colab T4) minus C1 (same recipe on the Mac): the cost of switching hardware."""
+    control = next((row for row in rows if row["exp"] == "C1"), None)
+    pin = Path(runs_dir) / "tuning_base.json"
+    if control is None or not pin.is_file():
+        return None
+    base_id = json.loads(pin.read_text(encoding="utf-8"))["run_id"]
+    base = next((row for row in rows if row["run_id"] == base_id), None)
+    if base is None:
+        return None
+    return {"base": base_id, "base_device": base.get("device"), "control": control["run_id"],
+            "control_device": control.get("device"),
+            "delta_val": base["best_val_accuracy"] - control["best_val_accuracy"],
+            "delta_test": base["test_accuracy"] - control["test_accuracy"]}
+
+
 def write_comparison(rows: list[dict], out_dir: Path, plots: bool = True) -> None:
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -116,11 +159,18 @@ def _plot(rows: list[dict], out_dir: Path) -> None:
         axis.set(xlabel="Epoch", ylabel="Validation accuracy", title="Learning curves (validation)"); axis.legend()
         figure.tight_layout(); figure.savefig(out_dir / "learning_curves_all.png", dpi=150); plt.close(figure)
 
-    tuning_rows = [row for row in rows if row["exp"].startswith("T")]
-    reference = tuning_reference(rows, Path(rows[0]["run_dir"]).parent) if rows else None
-    if tuning_rows and reference:
-        shown = [reference] + tuning_rows
+    deltas = tuning_deltas(rows, Path(rows[0]["run_dir"]).parent) if rows else []
+    if deltas:
         figure, axis = plt.subplots(figsize=(9, 4.5))
-        axis.barh([row["run_id"] for row in shown], [row["test_accuracy"] for row in shown])
-        axis.set(xlabel="Test accuracy", title="Tinh chỉnh so với cấu hình chuẩn"); axis.set_xlim(0, 1)
+        labels = [f"{d['run_id']}  (vs {d['reference']}, {d['device']})" for d in deltas]
+        values = [d["delta_test"] * 100 for d in deltas]
+        axis.barh(labels, values, color=["tab:green" if v >= 0 else "tab:red" for v in values])
+        axis.axvline(0, color="black", linewidth=0.8)
+        pad = max(0.5, max(abs(v) for v in values) * 0.2)
+        axis.set_xlim(min(0, min(values)) - pad, max(0, max(values)) + pad)
+        for y, value in enumerate(values):
+            axis.annotate(f"{value:+.2f}", (value, y), xytext=(3 if value >= 0 else -3, 0),
+                          textcoords="offset points", ha="left" if value >= 0 else "right", va="center", fontsize=8)
+        axis.set(xlabel="Chênh lệch test accuracy so với mốc cùng phần cứng (điểm %)",
+                 title="Tinh chỉnh: mỗi run chỉ đổi một yếu tố so với mốc")
         figure.tight_layout(); figure.savefig(out_dir / "tuning.png", dpi=150); plt.close(figure)
