@@ -2,6 +2,7 @@
 # # 00 — Chuẩn bị dữ liệu (chạy một lần)
 # Tải 30 lớp từ Hugging Face, loại ảnh trùng, tạo split 70/15/15, kiểm tra split có khớp với split cũ trong repo không,
 # rồi lưu data đã làm sạch lên Drive. Các notebook sau chỉ cần giải nén lại, không tải lại.
+# > Notebook này chỉ chạy trên Colab (một lần). Ở máy không cần: data đã có trên Drive, notebook 01 tự giải nén.
 
 # %% [markdown]
 # ## 0. Chuẩn bị phiên Colab

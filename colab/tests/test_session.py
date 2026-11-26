@@ -137,3 +137,38 @@ def test_restore_recovers_from_interrupted_extract(tmp_path):
     assert (fresh / "data" / "raw" / "A" / "x.jpg").read_bytes() == b"jpeg"
     assert not (fresh / "data" / "raw" / "junk.jpg").exists()
     assert not (fresh / "data" / ".extract").exists()
+
+
+def test_start_local_paths(tmp_path):
+    import os
+    repo, root = tmp_path / "repo", tmp_path / "drive" / "vnfood_colab"
+    repo.mkdir()
+    saved_cwd, saved_env = os.getcwd(), os.environ.get("VNFOOD_DRIVE_ROOT")
+    os.environ["VNFOOD_DRIVE_ROOT"] = str(root)
+    try:
+        env = session.start(repo, on_colab=False)
+    finally:
+        os.chdir(saved_cwd)
+        if saved_env is None:
+            os.environ.pop("VNFOOD_DRIVE_ROOT")
+        else:
+            os.environ["VNFOOD_DRIVE_ROOT"] = saved_env
+    assert env["on_colab"] is False and env["repo"] == repo
+    assert env["runs"] == root / "runs" and env["data"] == root / "data"
+    assert env["manifest"] == repo / "data" / session.MANIFEST_NAME
+    assert env["device"] in ("cuda", "mps", "cpu")
+
+
+def test_notebook_shell_calls_are_safe():
+    import re
+    sources = sorted((session.REPO / "colab" / "notebooks" / "src").glob("0[123]_*.py"))
+    assert len(sources) == 3
+    for source in sources:
+        for line in source.read_text(encoding="utf-8").splitlines():
+            if not line.startswith("!"):
+                continue
+            assert not line.startswith("!python "), (source.name, line)
+            if "colab.train_arch" in line:
+                assert '"{sys.executable}"' in line, (source.name, line)
+            for name in re.findall(r"\{(RUNS|MANIFEST|REPO)\}", line):
+                assert f'"{{{name}}}"' in line, (source.name, line)

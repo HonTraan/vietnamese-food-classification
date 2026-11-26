@@ -50,6 +50,20 @@ Mở notebook từ Drive (`My Drive/DL/vnfood_colab/code/colab/notebooks/…` �
 
 **Kiểm tra version:** `VERSION.txt` có `content_hash` (hash của toàn bộ file code). Cell 0 tự tính lại hash trên Colab và dừng nếu lệch. Lệch nghĩa là Google Drive for Desktop chưa upload xong: đợi 1–2 phút rồi chạy lại cell 0. Nếu code được sync lại trong lúc notebook đang mở, chọn *Runtime → Restart session* rồi chạy lại từ cell 0.
 
+## Chạy trên máy (Mac M4)
+
+Hết quota GPU Colab thì chạy tiếp trên máy, **vẫn bằng các notebook này** (`01`, `02`, `03`). Cell 0 tự nhận biết đang ở Colab hay ở máy. Notebook `00` chỉ chạy trên Colab.
+
+1. Cài môi trường một lần: `bash colab/setup_local.sh`. Script tạo `.venv` (Python 3.12) và kernel Jupyter `vnfood (.venv)`.
+2. Bật **Google Drive for Desktop**. Kết quả vẫn ghi vào `My Drive/DL/vnfood_colab/runs/`, nên Colab cũng thấy.
+3. Mở `colab/notebooks/01_experiments.ipynb` trong VS Code hoặc Jupyter và chọn kernel `vnfood (.venv)`. Chạy cell 0, rồi cell 1. Lần đầu, cell 1 tải `raw.zip` (6 GB) từ Drive và giải nén vào `data/raw`. Manifest được để ở `data/`, không đụng tới `outputs/` của Hoàng.
+4. Chạy cell **Chạy thử tốc độ** để biết mỗi run mất bao lâu trên máy. Muốn đổi số worker đọc ảnh thì đặt `VNFOOD_WORKERS`.
+5. Chạy **C1** trước, sau đó là T1 → T3 → T2 → T4a → T4b → T5.
+
+**Vì sao cần C1:** E1–E4 chạy trên T4 với fp16, còn trên máy thì chạy bằng GPU `mps` với fp32. C1 là base chạy lại y hệt trên máy. Mọi run T* chạy trên máy được so với C1, nên mỗi T* chỉ khác đúng một yếu tố. Hiệu số base − C1 cho biết ảnh hưởng của phần cứng. Bảng so sánh có cột `device`. Không so tốc độ giữa run chạy trên T4 và run chạy trên M4.
+
+Không chạy cùng một run ở hai nơi (Colab và máy) cùng lúc.
+
 ## Các thử nghiệm
 
 Cấu hình chung: split sạch 17.407 / 3.733 / 3.746, seed 42, ảnh 224, AMP, AdamW lr 3e-4, wd 1e-4, cosine, tối đa 12 epoch, early stopping patience 4, checkpoint chọn theo validation accuracy.
@@ -61,6 +75,7 @@ Cấu hình chung: split sạch 17.407 / 3.733 / 3.746, seed 42, ảnh 224, AMP,
 | E3 | MobileNetV3-Large fine-tune | Mạng nhẹ, nhanh (~5M) |
 | E4 | EfficientNet-B0 fine-tune | Ứng viên chính (~5M) |
 | E5 | ConvNeXt-Tiny fine-tune (tùy chọn) | Kiến trúc hiện đại (~28M) |
+| C1 | base chạy lại trên máy M4 (đối chứng) | Phần cứng ảnh hưởng bao nhiêu? Mốc so sánh cho T* chạy trên máy |
 | T1 | base + freeze backbone | Fine-tune toàn bộ có đáng không? |
 | T2 | base không pretrained | Transfer learning giúp bao nhiêu? |
 | T3 | base không augmentation | Augmentation có giảm overfit không? |
@@ -70,7 +85,7 @@ Cấu hình chung: split sạch 17.407 / 3.733 / 3.746, seed 42, ảnh 224, AMP,
 
 "Base" là mô hình E1–E4 có **validation accuracy** cao nhất, được chốt một lần trong `runs/tuning_base.json`. Mô hình cuối (notebook 02) là run có validation accuracy cao nhất trong mọi run. Tập test chỉ dùng để báo cáo, không dùng để chọn.
 
-Thứ tự ưu tiên khi ít quota: E1 → E4 → E2 → E3 → T1 → T3 → T2 → T4a → T4b → T5 → E5.
+Thứ tự ưu tiên khi ít quota: E1 → E4 → E2 → E3 → (C1 nếu chạy trên máy) → T1 → T3 → T2 → T4a → T4b → T5 → E5.
 
 ## Lệnh trên máy (macOS, Google Drive for Desktop)
 
