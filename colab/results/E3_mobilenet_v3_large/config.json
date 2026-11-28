@@ -1,0 +1,20 @@
+{
+  "run_id": "E3_mobilenet_v3_large",
+  "arch": "mobilenet_v3_large",
+  "pretrained": true,
+  "freeze_backbone": false,
+  "augment": true,
+  "lr": 0.0003,
+  "label_smoothing": 0.0,
+  "epochs": 12,
+  "batch_size": 32,
+  "patience": 4,
+  "seed": 42,
+  "version": "version=530c7a4-dirty-20261123134500\ncommit=530c7a45ce997f0f93ae3a15871878b3231e74e0\ndirty=yes\nsynced_at=2026-11-23T06:45:00Z\ncontent_hash=5ad5134f9b68b0ba",
+  "device": "Tesla T4",
+  "amp": true,
+  "started_at": "2026-11-25T19:26:26+00:00",
+  "train_size": 17407,
+  "validation_size": 3733,
+  "test_size": 3746
+}

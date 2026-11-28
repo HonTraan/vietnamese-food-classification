@@ -1,0 +1,20 @@
+{
+  "run_id": "T3_resnet50_noaug",
+  "arch": "resnet50",
+  "pretrained": true,
+  "freeze_backbone": false,
+  "augment": false,
+  "lr": 0.0003,
+  "label_smoothing": 0.0,
+  "epochs": 12,
+  "batch_size": 32,
+  "patience": 4,
+  "seed": 42,
+  "version": "local commit=b86a98d72e16b23cac9b00bc8689acc4b3e69bf0\ncontent_hash=aab1d9468c164d00",
+  "device": "mps (Apple M4 Pro)",
+  "amp": false,
+  "started_at": "2026-11-28T03:00:12+00:00",
+  "train_size": 17407,
+  "validation_size": 3733,
+  "test_size": 3746
+}
