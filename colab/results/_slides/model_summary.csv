@@ -1,0 +1,5 @@
+arch,total_params,head_params,frozen_trainable_params,macs,final_feature_shape
+cnn,397086,7710,,736992768,256×1×1
+resnet50,23569502,61470,61470,4087197696,2048×7×7
+mobilenet_v3_large,4240462,1268510,1268510,215348160,960×7×7
+efficientnet_b0,4045978,38430,38430,384573152,1280×7×7

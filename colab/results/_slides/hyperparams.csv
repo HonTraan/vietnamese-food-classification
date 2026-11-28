@@ -1,0 +1,12 @@
+run_id,arch,pretrained,freeze_backbone,augment,lr,label_smoothing,epochs,batch_size,patience,seed,optimizer,weight_decay,scheduler,device
+E1_cnn,cnn,False,False,True,0.001,0.05,15,32,4,42,AdamW,0.0001,"ReduceLROnPlateau(factor=0.5, patience=1)",Tesla T4
+E4_efficientnet_b0,efficientnet_b0,True,False,True,0.0003,0.0,12,32,4,42,AdamW,0.0001,CosineAnnealingLR(T_max=epochs),Tesla T4
+E2_resnet50,resnet50,True,False,True,0.0003,0.0,12,32,4,42,AdamW,0.0001,CosineAnnealingLR(T_max=epochs),Tesla T4
+E3_mobilenet_v3_large,mobilenet_v3_large,True,False,True,0.0003,0.0,12,32,4,42,AdamW,0.0001,CosineAnnealingLR(T_max=epochs),Tesla T4
+C1_resnet50_m4,resnet50,True,False,True,0.0003,0.0,12,32,4,42,AdamW,0.0001,CosineAnnealingLR(T_max=epochs),mps (Apple M4 Pro)
+T1_resnet50_frozen,resnet50,True,True,True,0.0003,0.0,12,32,4,42,AdamW,0.0001,CosineAnnealingLR(T_max=epochs),mps (Apple M4 Pro)
+T3_resnet50_noaug,resnet50,True,False,False,0.0003,0.0,12,32,4,42,AdamW,0.0001,CosineAnnealingLR(T_max=epochs),mps (Apple M4 Pro)
+T2_resnet50_scratch,resnet50,False,False,True,0.0003,0.0,12,32,4,42,AdamW,0.0001,CosineAnnealingLR(T_max=epochs),mps (Apple M4 Pro)
+T4a_resnet50_lr1e-3,resnet50,True,False,True,0.001,0.0,12,32,4,42,AdamW,0.0001,CosineAnnealingLR(T_max=epochs),mps (Apple M4 Pro)
+T4b_resnet50_lr1e-4,resnet50,True,False,True,0.0001,0.0,12,32,4,42,AdamW,0.0001,CosineAnnealingLR(T_max=epochs),mps (Apple M4 Pro)
+T5_resnet50_ls0.1,resnet50,True,False,True,0.0003,0.1,12,32,4,42,AdamW,0.0001,CosineAnnealingLR(T_max=epochs),mps (Apple M4 Pro)

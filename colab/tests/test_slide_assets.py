@@ -78,8 +78,8 @@ def test_grid_skips_unfinished_run(tmp_path):
     _fake_run(runs, "E2_resnet50", "resnet50")
     _fake_run(runs, "C1_resnet50_m4", "resnet50")
     _fake_run(runs, "T5_resnet50_ls0.1", "resnet50", done=False)
-    out = sa.learning_curves_grid(compare.collect(runs), tmp_path / "grid.png")
-    assert out.is_file()
+    for metric in ("accuracy", "loss"):
+        assert sa.learning_curves_grid(compare.collect(runs), tmp_path / f"{metric}.png", metric).is_file()
     assert sa.grid_run_ids(compare.collect(runs)) == ["E2_resnet50", "C1_resnet50_m4"]
 
 
@@ -103,5 +103,10 @@ def test_main_writes_only_into_out_dir(tmp_path):
     first = (out / "model_summary.csv").read_text()
     sa.main(runs, out)
     assert sorted(p.relative_to(runs) for p in runs.rglob("*")) == before
-    assert len(list(out.iterdir())) == 11
+    assert len(list(out.iterdir())) == 12
+    assert (out / "learning_curves_grid_loss.png").is_file()
     assert (out / "model_summary.csv").read_text() == first
+
+
+def test_resnet_stage_params_sum_to_total():
+    assert sum(r["params"] for r in sa.resnet_stage_summary()) == 23_569_502

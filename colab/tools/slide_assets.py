@@ -83,7 +83,9 @@ def resnet_stage_summary(num_classes: int = 30) -> list[dict]:
               "avgpool": model.avgpool, "fc": model.fc}
     traced = _trace(model, stages)
     return [{"stage": name, "blocks": len(module) if isinstance(module, nn.Sequential) else 1,
-             "in_shape": traced[name][0], "out_shape": traced[name][1], "params": count_params(module)}
+             "in_shape": traced[name][0], "out_shape": traced[name][1],
+             # the conv1 stage is conv1 + bn1 + relu, so its BatchNorm counts here
+             "params": count_params(module) + (count_params(model.bn1) if name == "conv1" else 0)}
             for name, module in stages.items()]
 
 
@@ -130,24 +132,29 @@ def grid_run_ids(rows: list[dict]) -> list[str]:
     return [row["run_id"] for row in rows]
 
 
-def learning_curves_grid(rows: list[dict], out: Path) -> Path:
+def learning_curves_grid(rows: list[dict], out: Path, metric: str = "accuracy") -> Path:
+    """Landscape grid (4 columns) of train vs validation `metric` per run; the dashed line marks the best val epoch."""
     plt = _pyplot()
-    figure, axes = plt.subplots(len(rows), 2, figsize=(11, 2.4 * len(rows)), squeeze=False)
-    for (left, right), row in zip(axes, rows):
+    columns = 4
+    lines = -(-len(rows) // columns)
+    figure, axes = plt.subplots(lines, columns, figsize=(16, 3.3 * lines + 0.8), squeeze=False)
+    for axis, row in zip(axes.flat, rows):
         history = _history(row["run_dir"])
         epochs = [h["epoch"] for h in history]
+        axis.plot(epochs, [h[f"train_{metric}"] for h in history], label="Train")
+        axis.plot(epochs, [h[f"val_{metric}"] for h in history], label="Validation")
         best = _metrics(row["run_dir"]).get("best_epoch")
-        for axis, key, title in ((left, "accuracy", "Accuracy"), (right, "loss", "Loss")):
-            axis.plot(epochs, [h[f"train_{key}"] for h in history], label="Train")
-            axis.plot(epochs, [h[f"val_{key}"] for h in history], label="Validation")
-            if best:
-                axis.axvline(best, color="gray", linestyle="--", linewidth=0.8)
-            axis.set_title(f"{row['run_id']} — {title}", fontsize=9)
-            axis.tick_params(labelsize=7)
-        left.legend(fontsize=7)
-    axes[-1][0].set_xlabel("Epoch"); axes[-1][1].set_xlabel("Epoch")
-    figure.suptitle("Train vs validation của mọi run (vạch đứt: epoch có val tốt nhất)")
-    figure.tight_layout(); figure.savefig(out, dpi=150); plt.close(figure)
+        if best:
+            axis.axvline(best, color="gray", linestyle="--", linewidth=0.8)
+        axis.set_title(row["run_id"], fontsize=10)
+        axis.set_xlabel("Epoch", fontsize=8)
+        axis.tick_params(labelsize=8)
+        axis.legend(fontsize=7)
+    for axis in list(axes.flat)[len(rows):]:
+        axis.axis("off")
+    name = "Accuracy" if metric == "accuracy" else "Loss"
+    figure.suptitle(f"{name}: train vs validation của mọi run (vạch đứt: epoch có val tốt nhất)", fontsize=13)
+    figure.tight_layout(rect=(0, 0, 1, 0.96)); figure.savefig(out, dpi=150); plt.close(figure)
     return Path(out)
 
 
@@ -164,6 +171,9 @@ def train_val_gap(rows: list[dict], out: Path) -> Path:
     for y, (_, gap) in enumerate(gaps):
         axis.annotate(f"{gap:+.1f}", (gap, y), xytext=(3 if gap >= 0 else -3, 0), textcoords="offset points",
                       ha="left" if gap >= 0 else "right", va="center", fontsize=8)
+    values = [g[1] for g in gaps]
+    pad = max(1.0, max(abs(v) for v in values) * 0.15)
+    axis.set_xlim(min(0, min(values)) - pad, max(0, max(values)) + pad)
     axis.invert_yaxis()
     axis.set(xlabel="Train accuracy − val accuracy tại epoch val tốt nhất (điểm %)", title="Mức overfit của từng run")
     figure.tight_layout(); figure.savefig(out, dpi=150); plt.close(figure)
@@ -251,7 +261,8 @@ def main(runs_dir: Path, out_dir: Path) -> None:
     _write_csv(out_dir / "model_summary.csv", [model_summary(arch) for arch in archs])
     _write_csv(out_dir / "hyperparams.csv", hyperparams_table(rows))
     final_dir = _final_run_dir(runs_dir, rows)
-    learning_curves_grid(rows, out_dir / "learning_curves_grid.png")
+    learning_curves_grid(rows, out_dir / "learning_curves_grid.png", "accuracy")
+    learning_curves_grid(rows, out_dir / "learning_curves_grid_loss.png", "loss")
     train_val_gap(rows, out_dir / "train_val_gap.png")
     per_class_f1(final_dir, out_dir / f"per_class_f1_{final_dir.name}.png")
     confusion_grid(rows, out_dir / "confusion_grid.png")
