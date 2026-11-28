@@ -1,0 +1,5 @@
+{
+  "run_id": "E2_resnet50",
+  "arch": "resnet50",
+  "reason": "best validation accuracy"
+}
