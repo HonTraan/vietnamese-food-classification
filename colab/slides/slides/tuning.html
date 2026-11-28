@@ -1,0 +1,30 @@
+<section id="tuning">
+<p class="eyebrow">12 · Tinh chỉnh (ablation trên ResNet-50, Mac M4)</p>
+<h2 class="title">Mỗi lựa chọn khi train đều có số liệu chứng minh</h2>
+<div class="row" style="align-items:flex-start;">
+<table class="t-small" style="width:1040px;">
+<tr class="hd"><th style="width:30%">Run · đổi gì so với C1</th><th style="width:14%; text-align:right">Val</th><th style="width:14%; text-align:right">Δ val</th><th style="width:14%; text-align:right">Δ test</th><th style="width:28%">Kết luận</th></tr>
+<tr class="pick"><td>C1 · base chạy lại</td><td style="text-align:right">89,20%</td><td style="text-align:right">mốc</td><td style="text-align:right">mốc</td><td>test 90,07%</td></tr>
+<tr><td>T1 · đóng băng backbone</td><td style="text-align:right">72,89%</td><td style="text-align:right">−16,3</td><td style="text-align:right">−15,5</td><td>phải fine-tune toàn bộ</td></tr>
+<tr><td>T2 · không pretrained</td><td style="text-align:right">67,00%</td><td style="text-align:right">−22,2</td><td style="text-align:right">−21,9</td><td>yếu tố quan trọng nhất</td></tr>
+<tr><td>T3 · bỏ augmentation</td><td style="text-align:right">88,24%</td><td style="text-align:right">−1,0</td><td style="text-align:right">−1,4</td><td>augmentation có ích</td></tr>
+<tr><td>T4a · lr 1e-3</td><td style="text-align:right">87,76%</td><td style="text-align:right">−1,4</td><td style="text-align:right">−2,2</td><td>lr quá lớn</td></tr>
+<tr><td>T4b · lr 1e-4</td><td style="text-align:right">89,07%</td><td style="text-align:right">−0,1</td><td style="text-align:right">−0,9</td><td>ngang mốc</td></tr>
+<tr><td>T5 · label smoothing 0,1</td><td style="text-align:right">89,28%</td><td style="text-align:right">+0,1</td><td style="text-align:right">−1,4</td><td>không cải thiện rõ</td></tr>
+</table>
+<div class="col grow">
+<img class="fig" src="/_blob/cac054a0d78829f054ec77b0aef9d47c" alt="Biểu đồ cột ngang chênh lệch test accuracy của T1 đến T5 so với C1" style="width:592px; height:296px;">
+<p class="small">Δ tính bằng điểm % so với C1 (cùng máy M4). Chênh dưới ~1 điểm nằm trong nhiễu của một seed.</p>
+</div>
+</div>
+<aside>Phần 3 · khoảng 1 phút 30 giây.
+
+Lời nói: “Sau khi chọn ResNet-50, nhóm kiểm tra từng lựa chọn khi train bằng cách bỏ hoặc đổi đúng một yếu tố, so với C1 chạy trên cùng máy. Không dùng pretrained thì mất 22 điểm: đây là yếu tố quan trọng nhất. Đóng băng backbone, chỉ train lớp cuối, mất 16 điểm: phải fine-tune toàn bộ mạng. Bỏ augmentation mất khoảng 1 điểm val; tăng lr lên 1e-3 mất 1,4 điểm. Còn lr 1e-4 và label smoothing cho kết quả ngang mốc, chênh dưới 1 điểm. Như vậy cấu hình nhóm chọn, pretrained + fine-tune toàn bộ + augmentation + lr 3e-4, là hợp lý.”
+
+Câu hỏi có thể gặp:
+• T5 có val bằng E2, sao không chọn T5? → Val của T5 (89,28%) bằng đúng E2. Quy tắc phân xử là macro-F1: E2 0,890 so với T5 0,888, nên E2 được chọn. Test của T5 cũng thấp hơn C1 1,4 điểm.
+• Sao không chọn C1, test 90,07% cao nhất? → C1 có val 89,20%, thấp hơn E2. Chọn theo test là gian lận vì dùng test để chọn mô hình.
+• Vì sao Δ test của T4b là −0,9 mà Δ val chỉ −0,1? → Với một seed, dao động test khoảng ±0,5–1 điểm là bình thường; nhóm kết luận dựa trên val và chỉ coi chênh lệch lớn là có ý nghĩa.
+
+Nguồn: colab/results/_compare/comparison.csv và tuning.png; bảng tuning_deltas trong notebook 02 (T1 −0,1631/−0,1548; T2 −0,2221/−0,2189; T3 −0,0096/−0,0144; T4a −0,0145/−0,0224; T4b −0,0013; T5 +0,0008).</aside>
+</section>

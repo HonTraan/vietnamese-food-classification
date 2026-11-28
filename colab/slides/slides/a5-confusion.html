@@ -1,0 +1,17 @@
+<section id="a5-confusion" class="alt">
+<p class="eyebrow">Phụ lục A5 · Confusion matrix của cả 4 kiến trúc</p>
+<div class="row" style="align-items:flex-start;">
+<img class="fig" src="/_blob/ac8a69e3f544949036f34e2a0f32805a" alt="Lưới 2×2 confusion matrix chuẩn hoá theo hàng của E1, E2, E3, E4" style="width:828px; height:760px;">
+<div class="col grow">
+<h2 class="title">Đường chéo đậm dần từ CNN tự xây sang mạng pretrained</h2>
+<p class="body">Chuẩn hoá theo hàng: mỗi ô là tỉ lệ ảnh của nhãn thật (hàng) bị dự đoán thành lớp (cột), nên đường chéo chính là recall của từng lớp, và lớp ít ảnh không trông như “ít lỗi hơn”.</p>
+<p class="body">E1 rải lỗi khắp ma trận. E2–E4 có cùng vùng lỗi: nhóm món nước có sợi.</p>
+<p class="src">Nguồn: colab/results/_slides/confusion_grid.png (từ confusion_matrix trong metrics.json của từng run)</p>
+</div>
+</div>
+<aside>Phụ lục, mở khi thầy hỏi confusion matrix của các model khác.
+
+Thứ tự lớp trên hai trục giống nhau ở cả 4 ma trận (thứ tự chữ cái của tên lớp). Ma trận đầy đủ có nhãn của E2 ở slide 13.
+
+Nguồn: confusion_grid.png; test_row_normalized_confusion trong colab/tests/test_slide_assets.py.</aside>
+</section>

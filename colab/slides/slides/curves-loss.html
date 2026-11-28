@@ -1,0 +1,20 @@
+<section id="curves-loss">
+<p class="eyebrow">10 · Biểu đồ train / validation</p>
+<h2 class="title">Loss theo epoch và mức overfit của từng run</h2>
+<div class="row" style="align-items:flex-start;">
+<img class="fig" src="/_blob/a1f6005bcb3639348faf40a54388950b" alt="Lưới 11 biểu đồ loss train và validation theo epoch" style="width:1000px; height:669px;">
+<div class="col grow">
+<img class="fig" src="/_blob/766061f1bc5e8eae1a8b31066bb9f3f3" alt="Biểu đồ cột ngang: train accuracy trừ val accuracy tại epoch val tốt nhất của từng run" style="width:632px; height:490px;">
+<p class="small">Val loss đi ngang từ epoch 4–6 trong khi train loss còn giảm. Bỏ augmentation (T3) cho khoảng cách lớn nhất: 11,7 điểm.</p>
+</div>
+</div>
+<aside>Phần 2 · khoảng 1 phút.
+
+Lời nói: “Bên trái là loss train và validation. Với các mạng pretrained, train loss giảm gần về 0 còn val loss đi ngang từ khoảng epoch 4 đến 6. Bên phải là khoảng cách train trừ val accuracy tại epoch tốt nhất, dùng làm thước đo overfit. Hầu hết run pretrained cách nhau khoảng 10 điểm; bỏ augmentation, T3, có khoảng cách lớn nhất 11,7 điểm, đúng như kỳ vọng: augmentation có tác dụng regularization. CNN tự xây có khoảng cách âm 3,7 điểm vì underfit.”
+
+Câu hỏi có thể gặp:
+• Val loss đi ngang mà accuracy vẫn tăng nhẹ là sao? → Mô hình ngày càng tự tin hơn trên các ảnh đã đúng và cả ảnh sai, nên loss trung bình đứng yên dù số ảnh đúng tăng. Đây cũng là lý do cần hiệu chỉnh nhiệt độ (slide calibration).
+• Loss của T5 cao hơn hẳn? → Label smoothing 0,1 đặt mục tiêu 0,9 thay cho 1, nên loss tối thiểu không còn là 0.
+
+Nguồn: learning_curves_grid_loss.png, train_val_gap.png (colab/results/_slides/). T3 +11,7; E1 −3,7; E2 +10,2.</aside>
+</section>

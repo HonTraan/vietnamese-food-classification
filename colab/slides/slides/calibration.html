@@ -1,0 +1,31 @@
+<section id="calibration" class="alt">
+<p class="eyebrow">14 · Hiệu chỉnh độ tự tin</p>
+<h2 class="title">Temperature scaling: độ tự tin khớp với tỉ lệ đúng</h2>
+<div class="row">
+<div class="card">
+<p class="card-tag">Cách làm</p>
+<p class="formula">p = softmax(z / T)</p>
+<p class="body">Tìm một số T duy nhất trên tập <b>validation</b> để NLL nhỏ nhất (tối ưu bằng L-BFGS). Không đổi argmax, nên accuracy giữ nguyên 88,79%.</p>
+</div>
+<div class="card">
+<p class="card-tag">Kết quả trên test</p>
+<p class="big">T = 1,80</p>
+<table class="t-small">
+<tr class="hd"><th style="width:40%">Chỉ số</th><th style="width:30%; text-align:right">Trước</th><th style="width:30%; text-align:right">Sau</th></tr>
+<tr><td>ECE</td><td style="text-align:right">6,00%</td><td style="text-align:right">1,32%</td></tr>
+<tr><td>NLL</td><td style="text-align:right">0,473</td><td style="text-align:right">0,383</td></tr>
+<tr><td>Brier</td><td style="text-align:right">0,169</td><td style="text-align:right">0,159</td></tr>
+</table>
+</div>
+</div>
+<p class="src">Nguồn: colab/results/E2_resnet50/calibration.json</p>
+<aside>Phần 3 · khoảng 30 giây.
+
+Lời nói: “Mô hình fine-tune thường tự tin quá mức: nói 99% nhưng không đúng tới mức đó. Nhóm dùng temperature scaling: chia logit cho một số T trước softmax, với T học trên tập validation. T bằng 1,80 làm ECE trên test giảm từ 6% xuống 1,3%, trong khi accuracy không đổi vì thứ tự các lớp giữ nguyên. Nhờ vậy phần trăm hiển thị trong demo đáng tin hơn.”
+
+Câu hỏi có thể gặp:
+• T > 1 nghĩa là gì? → Làm phân phối softmax “mềm” hơn, giảm độ tự tin quá mức.
+• Sao fit trên val chứ không phải test? → Để test vẫn là dữ liệu chưa dùng cho bất kỳ quyết định nào.
+
+Nguồn: calibration.json (temperature 1,8029; test_before ece 0,0600, nll 0,4726, brier 0,1694; test_after ece 0,0132, nll 0,3832, brier 0,1586).</aside>
+</section>

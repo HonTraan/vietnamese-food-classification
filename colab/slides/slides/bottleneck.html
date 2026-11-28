@@ -1,0 +1,43 @@
+<section id="bottleneck">
+<p class="eyebrow">8 · Bên trong một khối</p>
+<h2 class="title">Bottleneck, skip connection và head mới</h2>
+<div class="row">
+<div class="col" style="width:760px; gap:6px;">
+<div class="step"><p class="strong mono">x: 256×56×56</p></div>
+<p class="arrow">↓</p>
+<div class="step"><p class="strong">Conv 1×1, 64 → BN → ReLU</p><p class="small">giảm kênh 256 → 64</p></div>
+<p class="arrow">↓</p>
+<div class="step"><p class="strong">Conv 3×3, 64 → BN → ReLU</p><p class="small">trích đặc trưng không gian (stride 2 ở khối đầu stage)</p></div>
+<p class="arrow">↓</p>
+<div class="step"><p class="strong">Conv 1×1, 256 → BN</p><p class="small">tăng kênh lại 64 → 256</p></div>
+<p class="arrow">↓</p>
+<div class="step stage-new"><p class="strong">⊕ cộng với x rồi ReLU → y: 256×56×56</p></div>
+</div>
+<div class="col grow">
+<p class="formula">y = ReLU( F(x) + x )</p>
+<div class="card">
+<h3 class="card-title">Skip connection</h3>
+<p class="small">Gradient có đường đi thẳng qua phép cộng (∂y/∂x chứa thêm I), nên mạng 50 tầng vẫn train được, không bị vanishing gradient.</p>
+</div>
+<div class="card">
+<h3 class="card-title">Vì sao 1×1 – 3×3 – 1×1</h3>
+<p class="small">Khối layer1 chỉ có 69.632 trọng số conv, so với 1.179.648 nếu dùng hai conv 3×3 ở 256 kênh: rẻ hơn khoảng 17 lần.</p>
+</div>
+<div class="card">
+<h3 class="card-title">Head mới</h3>
+<p class="small">fc 1000 lớp ImageNet → <span class="mono">Linear(2048 → 30)</span>: 2048×30 + 30 = 61.470 tham số, khởi tạo ngẫu nhiên.</p>
+</div>
+</div>
+</div>
+<aside>Phần 2 · khoảng 1 phút 15 giây.
+
+Lời nói: “Mỗi stage gồm các khối bottleneck. Ví dụ khối thứ hai của layer1: đầu vào 256 kênh, conv 1×1 giảm còn 64 kênh, conv 3×3 trích đặc trưng không gian trên 64 kênh, rồi conv 1×1 tăng lại 256 kênh. Sau mỗi conv là BatchNorm và ReLU. Điểm mấu chốt là skip connection: đầu ra của nhánh chính F(x) được cộng với chính x, rồi mới qua ReLU. Nhờ vậy gradient có đường đi thẳng về các tầng đầu, nên mạng rất sâu vẫn train được. Thiết kế 1×1 – 3×3 – 1×1 làm khối rẻ hơn khoảng 17 lần so với hai conv 3×3 ở 256 kênh. Ở cuối mạng, nhóm thay lớp fc 1000 lớp của ImageNet bằng Linear 2048 sang 30, có 61.470 tham số.”
+
+Câu hỏi có thể gặp:
+• Khi số kênh hoặc kích thước đổi thì cộng x thế nào? → Khối đầu mỗi stage có nhánh downsample: conv 1×1 (stride 2 từ layer2 trở đi) + BN để đưa x về cùng kích thước với F(x).
+• BatchNorm làm gì? → Chuẩn hoá đầu ra mỗi kênh theo mini-batch (trừ trung bình, chia độ lệch chuẩn) rồi học lại scale và shift; giúp train ổn định với learning rate lớn hơn. Lúc đánh giá dùng trung bình động đã học.
+• Tính 69.632 thế nào? → 1×1: 256×64 = 16.384; 3×3: 3×3×64×64 = 36.864; 1×1: 64×256 = 16.384; tổng 69.632 (chưa tính BN). Hai conv 3×3 ở 256 kênh: 2×3×3×256×256 = 1.179.648.
+• Head mới khởi tạo thế nào? → Mặc định của nn.Linear trong PyTorch (Kaiming uniform). Toàn bộ 23,57 triệu tham số đều được cập nhật khi train.
+
+Nguồn: colab/models_zoo.py (model.fc = nn.Linear(model.fc.in_features, num_classes)); layers_resnet50.csv (layer1.0.conv1/conv2/conv3).</aside>
+</section>

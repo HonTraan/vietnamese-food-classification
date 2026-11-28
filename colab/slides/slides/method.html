@@ -1,0 +1,37 @@
+<section id="method" class="alt">
+<p class="eyebrow">5 · Thiết kế thí nghiệm</p>
+<h2 class="title">Mỗi lần chỉ đổi một yếu tố</h2>
+<div class="row">
+<div class="card">
+<p class="card-tag">E · Experiment</p>
+<h3 class="card-title">So sánh kiến trúc</h3>
+<p class="body">E1 CNN tự xây · E2 ResNet-50 · E3 MobileNetV3-Large · E4 EfficientNet-B0. Chạy trên GPU Tesla T4 (Colab), fp16. Run có val cao nhất được chốt làm <b>base</b>.</p>
+</div>
+<div class="card">
+<p class="card-tag">C · Control</p>
+<h3 class="card-title">Đối chứng phần cứng</h3>
+<p class="body">C1 = E2 chạy lại y hệt trên Mac M4 (GPU mps, fp32). Hiệu E2 − C1 cho biết đổi máy ảnh hưởng bao nhiêu.</p>
+</div>
+<div class="card">
+<p class="card-tag">T · Tuning</p>
+<h3 class="card-title">Tinh chỉnh (ablation)</h3>
+<p class="body">T1–T5 lấy base và đổi đúng một siêu tham số. Chạy trên M4, nên so với C1 cùng máy.</p>
+</div>
+</div>
+<div class="row">
+<p class="pill">Cùng split, seed 42</p>
+<p class="pill">Ảnh 224×224</p>
+<p class="pill">Chọn theo validation accuracy</p>
+<p class="pill">Test chỉ để báo cáo</p>
+</div>
+<p class="src">Nguồn: colab/experiments.py · colab/results/tuning_base.json</p>
+<aside>Phần 1 · khoảng 1 phút.
+
+Lời nói: “Để chứng minh mạng được chọn là tốt nhất, nhóm thiết kế ba nhóm thí nghiệm. Nhóm E so sánh 4 kiến trúc trong cùng điều kiện; run có validation accuracy cao nhất được chốt làm base, ở đây là ResNet-50. Nhóm T lấy base và mỗi run chỉ đổi đúng một yếu tố, nên chênh lệch kết quả là do yếu tố đó. Vì hết quota GPU Colab giữa chừng, các run T chạy trên Mac M4; để so sánh công bằng nhóm thêm run C1, chạy lại base y hệt trên Mac, và các run T được so với C1.”
+
+Câu hỏi có thể gặp:
+• Vì sao cần C1? → T4 dùng fp16 (AMP), M4 dùng fp32 và thứ tự phép tính khác. Nếu so thẳng T với E2 thì không tách được ảnh hưởng của phần cứng. C1 cho thấy chênh lệch chỉ 0,08 điểm val.
+• Có chạy nhiều seed không? → Mỗi cấu hình chạy 1 seed (42) vì giới hạn GPU. Đây là hạn chế; nhóm coi chênh lệch dưới khoảng 1 điểm là nằm trong nhiễu.
+
+Nguồn: experiments.py (EXPERIMENTS, tuning(), control()); tuning_base.json (base_exp E2).</aside>
+</section>

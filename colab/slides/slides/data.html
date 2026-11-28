@@ -1,0 +1,30 @@
+<section id="data">
+<p class="eyebrow">2 · Dữ liệu</p>
+<h2 class="title">24.886 ảnh, 30 lớp, mất cân bằng 3,5 lần</h2>
+<div class="row" style="align-items:flex-start;">
+<img class="fig" src="/_blob/96977660a20f806544f62bac57144135" alt="Biểu đồ cột số ảnh của từng lớp trong 30 lớp" style="width:1060px; height:606px;">
+<div class="col grow">
+<div class="card">
+<p class="big">24.886</p>
+<p class="body">ảnh sau khi loại trùng</p>
+</div>
+<div class="card">
+<p class="big">437 → 1.517</p>
+<p class="body">ảnh mỗi lớp: bánh pía ít nhất, bún bò Huế nhiều nhất</p>
+</div>
+<div class="card">
+<p class="body">Nguồn: HuggingFace <span class="mono">TuyenTrungLe/vietnamese_food_images</span>, gộp mọi split gốc rồi tự chia lại</p>
+</div>
+</div>
+</div>
+<p class="src">Nguồn: colab/results/_eda/class_distribution.png, eda_summary.json · src/dataset.py</p>
+<aside>Phần 1 · khoảng 1 phút.
+
+Lời nói: “Dữ liệu lấy từ HuggingFace, bộ vietnamese_food_images, đủ 30 lớp. Nhóm gộp toàn bộ split gốc lại rồi tự làm sạch và tự chia, để chắc chắn không có ảnh trùng giữa train và test. Sau khi loại trùng còn 24.886 ảnh. Phân bố lệch: lớp ít nhất là bánh pía với 437 ảnh, nhiều nhất là bún bò Huế với 1.517 ảnh, chênh khoảng 3,5 lần.”
+
+Câu hỏi có thể gặp:
+• Có cân bằng lại dữ liệu không (oversampling, class weight)? → Không. Với mức lệch 3,5 lần, nhóm chọn báo cáo macro-F1 và F1 từng lớp để theo dõi lớp nhỏ. Kết quả cho thấy lớp nhỏ như bánh pía vẫn đạt F1 0,96, nên lệch lớp không phải nguyên nhân chính gây lỗi.
+• Vì sao không dùng split gốc? → Split gốc có thể chứa ảnh trùng giữa các tập. Tự chia sau khi loại trùng đảm bảo test thật sự là ảnh chưa thấy.
+
+Nguồn: eda_summary.json (num_images 24.886, class_counts), per_class_f1_E2_resnet50.png (Banh pia 0,96).</aside>
+</section>

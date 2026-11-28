@@ -1,0 +1,32 @@
+<section id="errors">
+<p class="eyebrow">13 · Phân tích lỗi của mô hình cuối (E2)</p>
+<h2 class="title">Lỗi tập trung ở các món nước có sợi</h2>
+<div class="row" style="align-items:flex-start;">
+<img class="fig" src="/_blob/b5f0b7c2a71655f15259cbd0db0ad647" alt="Confusion matrix 30×30 của E2 ResNet-50 trên tập test" style="width:860px; height:688px;">
+<div class="col grow">
+<table class="t-small">
+<tr class="hd"><th style="width:64%">Nhãn thật → dự đoán</th><th style="width:36%; text-align:right">Số ảnh</th></tr>
+<tr><td>Phở → Bún bò Huế</td><td style="text-align:right">15</td></tr>
+<tr><td>Bánh canh → Bún bò Huế</td><td style="text-align:right">12</td></tr>
+<tr><td>Bún riêu → Bún bò Huế</td><td style="text-align:right">11</td></tr>
+<tr><td>Bánh canh → Hủ tiếu</td><td style="text-align:right">9</td></tr>
+</table>
+<div class="card">
+<p class="strong">F1 thấp nhất</p>
+<p class="small">Bánh canh 0,71 · Phở 0,76 · Bánh đúc 0,77 · Hủ tiếu 0,78</p>
+<p class="strong">F1 cao nhất</p>
+<p class="small">Bún đậu mắm tôm 0,97 · Cơm tấm, Bánh mì, Xôi xéo 0,96</p>
+</div>
+<p class="small">Bún bò Huế là lớp đông nhất (1.517 ảnh) nên hút các món tô nước trông giống nó.</p>
+</div>
+</div>
+<aside>Phần 3 · khoảng 1 phút 30 giây.
+
+Lời nói: “Đây là confusion matrix của mô hình cuối trên tập test. Đường chéo đậm nghĩa là phần lớn ảnh được phân loại đúng. Các ô lệch khỏi đường chéo tập trung ở nhóm món nước có sợi: 15 ảnh phở bị đoán là bún bò Huế, 12 ảnh bánh canh và 11 ảnh bún riêu cũng bị đoán là bún bò Huế. Ba trong bốn lớp F1 thấp nhất thuộc nhóm này. Ngược lại, món có hình dạng đặc trưng như bún đậu mắm tôm, cơm tấm, bánh mì đạt F1 từ 0,96 trở lên. Bún bò Huế có nhiều ảnh nhất nên mô hình có xu hướng nghiêng về lớp này khi không chắc chắn.”
+
+Câu hỏi có thể gặp:
+• Cách cải thiện? → Thêm ảnh cho các món nước, augmentation crop sát vào tô để thấy rõ sợi và topping, dùng class weight hoặc focal loss cho cặp dễ nhầm, hoặc ảnh độ phân giải cao hơn 224.
+• Có ảnh nào sai do nhãn gốc sai không? → Có thể. Khi làm sạch đã thấy 52 cặp ảnh trùng nhưng mang nhãn khác nhau, tức là nhãn gốc có nhiễu. 15 ảnh sai với độ tự tin cao nhất (misclassified_top15.png, notebook 02) là chỗ nên kiểm tra trước.
+
+Nguồn: E2_resnet50/metrics.json (confusion_matrix, report), confusion_matrix.png, colab/results/_slides/per_class_f1_E2_resnet50.png.</aside>
+</section>

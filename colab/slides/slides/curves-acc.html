@@ -1,0 +1,23 @@
+<section id="curves-acc">
+<p class="eyebrow">10 · Biểu đồ train / validation</p>
+<h2 class="title">Accuracy theo epoch của cả 11 run</h2>
+<div class="row" style="align-items:flex-start;">
+<img class="fig" src="/_blob/34defb051d16b52d125ddd29e59228d8" alt="Lưới 11 biểu đồ accuracy train và validation theo epoch, mỗi run một ô" style="width:1040px; height:696px;">
+<div class="col grow">
+<div class="card"><p class="strong">Pretrained (E2–E4, C1, T3–T5)</p><p class="small">Train lên ~99%, val dừng ở 88–89% từ epoch 9–10: khoảng cách ~10 điểm.</p></div>
+<div class="card"><p class="strong">E1 CNN tự xây</p><p class="small">Val bám sát train, đạt 61% ở epoch 14: underfit, mạng nhỏ học từ đầu.</p></div>
+<div class="card"><p class="strong">T2 không pretrained</p><p class="small">Vẫn đang tăng ở epoch 12 (val 67%): cần nhiều epoch hơn nhiều.</p></div>
+<div class="card"><p class="strong">T1 đóng băng backbone</p><p class="small">Train 77%, val 73%: chỉ 61.470 tham số được học.</p></div>
+</div>
+</div>
+<aside>Phần 2 · khoảng 1 phút.
+
+Lời nói: “Đây là biểu đồ accuracy train và validation theo từng epoch cho cả 11 run; vạch đứt là epoch có val tốt nhất, cũng là checkpoint được giữ. Các mạng pretrained hội tụ rất nhanh: sau 2 epoch val đã khoảng 81–84%, train tiến tới 99% còn val dừng quanh 88–89%. CNN tự xây thì ngược lại, train và val đi sát nhau và chỉ đạt khoảng 61%: đây là underfit, mạng quá nhỏ. T2 train ResNet-50 từ đầu vẫn đang tăng ở epoch 12. T1 chỉ học lớp cuối nên dừng sớm ở 73% val.”
+
+Câu hỏi có thể gặp:
+• Overfit không? → Có khoảng cách train–val khoảng 10 điểm, nhưng val không giảm theo thời gian, nên chưa phải overfit gây hại; checkpoint chọn theo val nên luôn lấy điểm tốt nhất.
+• Vì sao val của E1 có lúc cao hơn train? → Train đo trên ảnh đã augmentation và label smoothing, khó hơn ảnh val đã center-crop.
+• Sao không train T2 lâu hơn? → Để giữ đúng một yếu tố thay đổi so với C1, T2 dùng cùng 12 epoch. Kết luận vẫn đúng: với cùng ngân sách, pretrained hơn 22 điểm.
+
+Nguồn: colab/results/_slides/learning_curves_grid.png (sinh từ history.csv của từng run bởi colab/tools/slide_assets.py). E1 best_epoch 14, val 61,21%; T1 train 77,5%, val 72,89%; T2 val 67,00%.</aside>
+</section>

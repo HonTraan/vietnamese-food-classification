@@ -1,0 +1,25 @@
+<section id="compare">
+<p class="eyebrow">11 · So sánh kiến trúc</p>
+<h2 class="title">ResNet-50 có validation accuracy cao nhất</h2>
+<table class="t-small">
+<tr class="hd"><th style="width:22%">Run</th><th style="width:12%; text-align:right">Val acc</th><th style="width:12%; text-align:right">Test acc</th><th style="width:12%; text-align:right">Macro-F1</th><th style="width:12%; text-align:right">Top-3</th><th style="width:12%; text-align:right">Tham số</th><th style="width:18%; text-align:right">Ảnh/giây (T4)</th></tr>
+<tr><td>E1 · CNN tự xây</td><td style="text-align:right">61,21%</td><td style="text-align:right">60,97%</td><td style="text-align:right">0,597</td><td style="text-align:right">82,14%</td><td style="text-align:right">0,40 M</td><td style="text-align:right">1.395</td></tr>
+<tr class="pick"><td>E2 · ResNet-50</td><td style="text-align:right">89,28%</td><td style="text-align:right">88,79%</td><td style="text-align:right">0,890</td><td style="text-align:right">96,64%</td><td style="text-align:right">23,57 M</td><td style="text-align:right">324</td></tr>
+<tr><td>E3 · MobileNetV3-L</td><td style="text-align:right">88,24%</td><td style="text-align:right">87,96%</td><td style="text-align:right">0,880</td><td style="text-align:right">96,34%</td><td style="text-align:right">4,24 M</td><td style="text-align:right">1.435</td></tr>
+<tr><td>E4 · EfficientNet-B0</td><td style="text-align:right">88,78%</td><td style="text-align:right">88,31%</td><td style="text-align:right">0,885</td><td style="text-align:right">96,56%</td><td style="text-align:right">4,05 M</td><td style="text-align:right">862</td></tr>
+</table>
+<div class="row" style="align-items:flex-start;">
+<img class="fig" src="/_blob/6ece0b185abc7b6ab4c090a081017767" alt="Biểu đồ cột test accuracy và macro-F1 của 4 kiến trúc" style="width:680px; height:340px;">
+<img class="fig" src="/_blob/d4ae2981c552e008df8554c1dba3acdf" alt="Biểu đồ điểm test accuracy theo số tham số" style="width:530px; height:340px;">
+<p class="small grow">Ba mạng pretrained chỉ cách nhau 1 điểm. ResNet-50 đổi tốc độ lấy độ chính xác: chậm hơn MobileNetV3 4,4 lần.</p>
+</div>
+<aside>Phần 3 · khoảng 1 phút.
+
+Lời nói: “Cả 4 kiến trúc được đánh giá trên cùng tập test 3.746 ảnh. ResNet-50 có validation accuracy cao nhất, 89,28%, nên được chọn làm base; trên test nó cũng cao nhất: 88,79% accuracy và macro-F1 0,890. Ba mạng pretrained chỉ cách nhau khoảng 1 điểm, còn CNN tự xây kém gần 28 điểm, cho thấy sức mạnh của transfer learning. Đổi lại, ResNet-50 chậm nhất: 324 ảnh mỗi giây trên T4 so với khoảng 1.435 của MobileNetV3.”
+
+Câu hỏi có thể gặp:
+• Chênh 0,5 điểm giữa E2 và E4 có ý nghĩa không? → Trên 3.746 ảnh, sai số chuẩn của accuracy khoảng 0,5 điểm, nên E2, E4, E3 gần như ngang nhau. Nhóm chọn theo quy tắc đã định trước là val cao nhất; nếu ưu tiên tốc độ hoặc chạy trên điện thoại thì EfficientNet-B0 là lựa chọn hợp lý.
+• Sao không chọn MobileNet nhanh hơn? → Mục tiêu đề tài là độ chính xác; demo chạy trên máy tính nên tốc độ 324 ảnh/giây là đủ.
+
+Nguồn: colab/results/_compare/comparison.csv (best_val_accuracy, test_accuracy, macro_f1, top3_accuracy, params, gpu_images_per_sec), comparison_arch.png, accuracy_vs_params.png.</aside>
+</section>

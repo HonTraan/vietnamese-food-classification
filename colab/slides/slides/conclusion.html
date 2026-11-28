@@ -1,0 +1,55 @@
+<section id="conclusion">
+<p class="eyebrow">16 · Kết luận</p>
+<h2 class="title">Mô hình cuối: ResNet-50, macro-F1 0,890</h2>
+<div class="row" style="gap:24px;">
+<div class="card-dark" style="flex:1.3; gap:8px;">
+<p class="card-tag" style="color:#F2A65A;">Macro-F1 (test, 30 lớp)</p>
+<p class="big" style="color:#F2A65A;">0,890</p>
+<p class="small" style="color:#C9D3E3;">precision 0,891 · recall 0,889</p>
+</div>
+<div class="card" style="gap:8px;">
+<p class="card-tag">Accuracy</p>
+<p class="big">88,79%</p>
+<p class="small">3.746 ảnh test</p>
+</div>
+<div class="card" style="gap:8px;">
+<p class="card-tag">Top-3</p>
+<p class="big">96,64%</p>
+<p class="small">đáp án nằm trong 3 gợi ý</p>
+</div>
+<div class="card" style="flex:1.3; gap:8px;">
+<p class="card-tag">F1 theo từng lớp</p>
+<p class="big">0,71 – 0,98</p>
+<p class="small">trung vị 0,91 · 17/30 lớp ≥ 0,90</p>
+</div>
+</div>
+<div class="row" style="gap:24px;">
+<div class="card" style="padding:24px;">
+<p class="card-tag">Kết quả</p>
+<p class="small">Macro-F1 ≈ accuracy (0,890 so với 0,888): mô hình không thiên về lớp nhiều ảnh. Macro-F1 theo kiến trúc: CNN 0,597 · MobileNetV3 0,880 · EfficientNet 0,885 · ResNet-50 0,890. Transfer learning là yếu tố quyết định: +22 điểm so với train từ đầu.</p>
+</div>
+<div class="card" style="padding:24px;">
+<p class="card-tag">Hạn chế</p>
+<p class="small">Mỗi cấu hình 1 seed. Ba mạng pretrained cách nhau trong khoảng nhiễu. Món nước có sợi kéo F1 xuống: bánh canh 0,71, phở 0,76, hủ tiếu 0,78.</p>
+</div>
+<div class="card" style="padding:24px;">
+<p class="card-tag">Hướng phát triển</p>
+<p class="small">Chạy nhiều seed, thêm ảnh cho món nước, ảnh độ phân giải cao hơn, thử ConvNeXt-Tiny, rút gọn mô hình (EfficientNet) cho điện thoại.</p>
+</div>
+</div>
+<div class="row">
+<p class="pill">Code: colab/ · src/</p>
+<p class="pill">Số liệu: colab/results/</p>
+</div>
+<aside>Phần 3 · khoảng 1 phút 15 giây.
+
+Lời nói: “Tóm lại, mô hình cuối là ResNet-50 pretrained ImageNet, fine-tune toàn bộ mạng. Trên 3.746 ảnh test chưa từng thấy, macro-F1 đạt 0,890, accuracy 88,79%, top-3 96,64%. Nhóm coi macro-F1 là chỉ số chính vì nó lấy trung bình F1 của 30 lớp với trọng số bằng nhau: lớp bánh pía 437 ảnh được tính ngang lớp bún bò Huế 1.517 ảnh. Macro-F1 gần bằng accuracy cho thấy mô hình không chỉ giỏi ở các lớp nhiều ảnh. Theo từng lớp, F1 từ 0,71 đến 0,98, trung vị 0,91; các lớp yếu nhất đều là món nước có sợi. Hạn chế: mỗi cấu hình chỉ chạy một seed, ba mạng pretrained gần như ngang nhau. Hướng tiếp theo là chạy nhiều seed, bổ sung dữ liệu cho các món dễ nhầm và thử ConvNeXt. Cảm ơn thầy và các bạn đã lắng nghe.”
+
+Câu hỏi có thể gặp:
+• F1 tính thế nào? → Với mỗi lớp: F1 = 2·P·R / (P + R), P = precision (trong các ảnh đoán là lớp đó, bao nhiêu đúng), R = recall (trong các ảnh thật của lớp đó, bao nhiêu được tìm ra). Macro-F1 = trung bình cộng F1 của 30 lớp.
+• Vì sao không chỉ dùng accuracy? → Dữ liệu lệch 3,5 lần (437 đến 1.517 ảnh mỗi lớp). Accuracy bị các lớp lớn chi phối; macro-F1 phạt cả việc bỏ sót lẫn đoán nhầm ở từng lớp, kể cả lớp nhỏ.
+• Macro-F1 có được dùng để chọn mô hình không? → Có, để phá hoà: E2 và T5 cùng val accuracy 89,28%, E2 được chọn vì macro-F1 cao hơn. Chọn vẫn theo tập validation, test chỉ để báo cáo.
+• Nếu được làm lại, nhóm thay đổi gì? → Chạy 3 seed cho mỗi cấu hình để có khoảng tin cậy, và gán lại nhãn cho các ảnh nghi sai trước khi train.
+
+Nguồn: colab/results/E2_resnet50/metrics.json (macro avg precision 0,8913, recall 0,8886, f1 0,8895; F1 thấp nhất Banh canh 0,705, cao nhất Bun dau mam tom 0,975; trung vị 0,905; 17 lớp ≥ 0,90); comparison.csv (macro_f1 E1 0,597, E3 0,880, E4 0,885).</aside>
+</section>

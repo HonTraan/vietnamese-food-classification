@@ -98,6 +98,8 @@ python3 colab/tools/build_notebooks.py # build lại .ipynb từ colab/notebooks
 .venv/bin/python -m colab.tools.slide_assets   # bảng từng tầng, tóm tắt model, biểu đồ train/val cho slide -> colab/results/_slides/
 ```
 
+Bộ slide thuyết trình (claude.ai Slides) được lưu ở `colab/slides/`: `deck.json` (thứ tự, các phần), `deck.css`, `slides/*.html` (mỗi file một slide, speaker notes trong `<aside>`). Ảnh trong slide (`/_blob/...`) là các hình trong `colab/results/_slides/` và `colab/results/_compare/`.
+
 Đặt `VNFOOD_DRIVE_ROOT=/đường/dẫn/vnfood_colab` nếu máy có nhiều tài khoản Drive. Notebook được viết ở `colab/notebooks/src/*.py` (dạng `# %%`). Sửa ở đó rồi build lại, đừng sửa trực tiếp `.ipynb`.
 
 ## Ghi chú về code gốc (cho Hoàng)

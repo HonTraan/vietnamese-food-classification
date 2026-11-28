@@ -1,0 +1,37 @@
+<section id="preprocess">
+<p class="eyebrow">4 · Tiền xử lý và chuẩn hoá</p>
+<h2 class="title">Cùng kích thước, cùng phân phối với lúc pretrain</h2>
+<div class="row">
+<div class="card">
+<p class="card-tag">Train (có augmentation)</p>
+<p class="body mono">RandomResizedCrop(224, scale=(0.7, 1.0))</p>
+<p class="body mono">RandomHorizontalFlip(p=0.5)</p>
+<p class="body mono">ColorJitter(0.15, 0.15, 0.1)</p>
+<p class="body mono">ToTensor() → [0, 1]</p>
+<p class="body mono">Normalize(μ, σ)</p>
+</div>
+<div class="card">
+<p class="card-tag">Validation và test (cố định)</p>
+<p class="body mono">Resize(256)</p>
+<p class="body mono">CenterCrop(224)</p>
+<p class="body mono">ToTensor() → [0, 1]</p>
+<p class="body mono">Normalize(μ, σ)</p>
+<p class="small">Không ngẫu nhiên, nên mỗi lần đánh giá cho cùng một kết quả.</p>
+</div>
+</div>
+<div class="card-dark">
+<h3 class="card-title">Chuẩn hoá từng kênh: x′ = (x − μ) / σ</h3>
+<p class="body">μ = (0,485; 0,456; 0,406), σ = (0,229; 0,224; 0,225) cho R, G, B: thống kê của ImageNet. Backbone được pretrain với đúng phép chuẩn hoá này, nên đầu vào phải theo cùng phân phối thì đặc trưng đã học mới dùng lại được.</p>
+</div>
+<aside>Phần 1 · khoảng 1 phút 30 giây.
+
+Lời nói: “Có chuẩn hoá. Mọi ảnh được đưa về 224×224 và chuẩn hoá từng kênh màu theo công thức x trừ μ chia σ, với μ và σ là trung bình và độ lệch chuẩn của ImageNet. Khi train, nhóm thêm augmentation: cắt ngẫu nhiên giữ 70 đến 100% diện tích ảnh rồi resize về 224, lật ngang với xác suất 0,5, và thay đổi nhẹ độ sáng, độ tương phản 15%, độ bão hoà 10%. Khi đánh giá thì không có gì ngẫu nhiên: resize cạnh ngắn về 256 rồi cắt giữa 224.”
+
+Câu hỏi có thể gặp:
+• Vì sao dùng μ, σ của ImageNet mà không tính trên tập món ăn? → Trọng số pretrained được học với đầu vào chuẩn hoá theo ImageNet; đổi thống kê sẽ lệch phân phối đầu vào của lớp conv đầu tiên. Với CNN tự xây (E1), nhóm dùng cùng phép chuẩn hoá cho thống nhất pipeline.
+• Vì sao chuẩn hoá giúp train? → Đầu vào quanh 0 với phương sai cỡ 1 làm gradient ổn định hơn và learning rate dùng chung được cho các kênh.
+• Vì sao không lật dọc hay xoay mạnh? → Ảnh món ăn thường chụp từ trên hoặc chéo; lật ngang không đổi ý nghĩa, còn xoay mạnh và lật dọc ít gặp trong ảnh thật. ColorJitter để nhẹ vì màu là đặc trưng quan trọng (nước dùng phở trong, bún bò Huế đỏ).
+• Augmentation có tác dụng không? → Có số liệu: bỏ augmentation (T3) làm val giảm 1,0 điểm so với C1 (xem slide tinh chỉnh).
+
+Nguồn: src/dataset.py (train_transform, eval_transform, MEAN, STD, IMAGE_SIZE = 224).</aside>
+</section>

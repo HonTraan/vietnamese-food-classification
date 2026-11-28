@@ -1,0 +1,22 @@
+<section id="a4-hyperparams" class="alt">
+<p class="eyebrow">Phụ lục A4 · Siêu tham số của từng run</p>
+<h2 class="title">11 run, đọc từ config.json của từng run</h2>
+<table class="t-small">
+<tr class="hd"><th style="width:24%">Run</th><th style="width:11%">Pretrained</th><th style="width:11%">Đóng băng</th><th style="width:11%">Augment</th><th style="width:9%; text-align:right">lr</th><th style="width:11%; text-align:right">Label smooth.</th><th style="width:8%; text-align:right">Epoch</th><th style="width:15%">Máy</th></tr>
+<tr><td>E1_cnn</td><td>không</td><td>không</td><td>có</td><td style="text-align:right">1e-3</td><td style="text-align:right">0,05</td><td style="text-align:right">15</td><td>T4</td></tr>
+<tr><td>E2_resnet50</td><td>có</td><td>không</td><td>có</td><td style="text-align:right">3e-4</td><td style="text-align:right">0</td><td style="text-align:right">12</td><td>T4</td></tr>
+<tr><td>E3_mobilenet_v3_large</td><td>có</td><td>không</td><td>có</td><td style="text-align:right">3e-4</td><td style="text-align:right">0</td><td style="text-align:right">12</td><td>T4</td></tr>
+<tr><td>E4_efficientnet_b0</td><td>có</td><td>không</td><td>có</td><td style="text-align:right">3e-4</td><td style="text-align:right">0</td><td style="text-align:right">12</td><td>T4</td></tr>
+<tr><td>C1_resnet50_m4</td><td>có</td><td>không</td><td>có</td><td style="text-align:right">3e-4</td><td style="text-align:right">0</td><td style="text-align:right">12</td><td>M4</td></tr>
+<tr><td>T1_resnet50_frozen</td><td>có</td><td style="color:#A8432E">có</td><td>có</td><td style="text-align:right">3e-4</td><td style="text-align:right">0</td><td style="text-align:right">12</td><td>M4</td></tr>
+<tr><td>T2_resnet50_scratch</td><td style="color:#A8432E">không</td><td>không</td><td>có</td><td style="text-align:right">3e-4</td><td style="text-align:right">0</td><td style="text-align:right">12</td><td>M4</td></tr>
+<tr><td>T3_resnet50_noaug</td><td>có</td><td>không</td><td style="color:#A8432E">không</td><td style="text-align:right">3e-4</td><td style="text-align:right">0</td><td style="text-align:right">12</td><td>M4</td></tr>
+<tr><td>T4a_resnet50_lr1e-3</td><td>có</td><td>không</td><td>có</td><td style="text-align:right; color:#A8432E">1e-3</td><td style="text-align:right">0</td><td style="text-align:right">12</td><td>M4</td></tr>
+<tr><td>T4b_resnet50_lr1e-4</td><td>có</td><td>không</td><td>có</td><td style="text-align:right; color:#A8432E">1e-4</td><td style="text-align:right">0</td><td style="text-align:right">12</td><td>M4</td></tr>
+<tr><td>T5_resnet50_ls0.1</td><td>có</td><td>không</td><td>có</td><td style="text-align:right">3e-4</td><td style="text-align:right; color:#A8432E">0,1</td><td style="text-align:right">12</td><td>M4</td></tr>
+</table>
+<p class="src">Chung cho mọi run: AdamW, weight decay 1e-4, batch 32, patience 4, seed 42. Nguồn: colab/results/_slides/hyperparams.csv</p>
+<aside>Phụ lục. Ô màu cam đỏ là yếu tố duy nhất mỗi run T đổi so với C1.
+
+Nguồn: hyperparams.csv (đọc từ config.json của từng run trong colab/results/).</aside>
+</section>

@@ -1,0 +1,34 @@
+<section id="cleaning">
+<p class="eyebrow">3 · Làm sạch và chia tập</p>
+<h2 class="title">Loại ảnh trùng trước khi chia, để test là ảnh chưa thấy</h2>
+<div class="row">
+<div class="col grow">
+<div class="step"><p class="strong">① SHA-256 trên nội dung file</p><p class="small">bắt ảnh trùng y hệt từng byte</p></div>
+<p class="arrow">↓</p>
+<div class="step"><p class="strong">② dHash 64-bit + BK-tree, Hamming ≤ 5</p><p class="small">ảnh xám 9×8, so sánh từng cặp pixel kề nhau → bắt ảnh gần trùng (resize, nén lại, chỉnh màu nhẹ)</p></div>
+<p class="arrow">↓</p>
+<div class="step"><p class="strong">③ Union-find gom nhóm, giữ 1 ảnh mỗi nhóm</p><p class="small">loại 250 ảnh: 198 cặp cùng nhãn, 52 cặp khác nhãn</p></div>
+</div>
+<div class="col" style="width:680px;">
+<table class="t">
+<tr class="hd"><th style="width:34%">Tập</th><th style="width:33%; text-align:right">Số ảnh</th><th style="width:33%; text-align:right">Tỉ lệ</th></tr>
+<tr><td>Train</td><td style="text-align:right">17.407</td><td style="text-align:right">70%</td></tr>
+<tr><td>Validation</td><td style="text-align:right">3.733</td><td style="text-align:right">15%</td></tr>
+<tr><td>Test</td><td style="text-align:right">3.746</td><td style="text-align:right">15%</td></tr>
+<tr><td>Tổng</td><td style="text-align:right">24.886</td><td style="text-align:right">100%</td></tr>
+</table>
+<p class="body">Chia <b>phân tầng theo từng lớp</b>, seed 42: mỗi lớp lấy 70% cho train, 30% còn lại chia đôi cho val và test. Mọi run dùng chung file split này.</p>
+</div>
+</div>
+<p class="src">Nguồn: src/data_cleaning.py · data/clean_split_manifest.json · outputs/duplicate_report.csv</p>
+<aside>Phần 1 · khoảng 1 phút 30 giây.
+
+Lời nói: “Trước khi chia tập, nhóm loại ảnh trùng, vì nếu cùng một ảnh nằm ở cả train và test thì test accuracy bị thổi phồng. Bước 1 so hash SHA-256 để bắt ảnh trùng y hệt. Bước 2 dùng dHash: thu ảnh về xám 9×8, so sánh độ sáng từng cặp pixel kề nhau để được chuỗi 64 bit; hai ảnh có khoảng cách Hamming không quá 5 bit được coi là gần trùng. BK-tree giúp tìm nhanh các hash gần nhau. Bước 3 gom các cặp trùng thành nhóm bằng union-find và giữ một ảnh mỗi nhóm. Tổng cộng loại 250 ảnh, trong đó 52 cặp trùng nhưng khác nhãn, tức là nhãn gốc bị nhiễu. Sau đó chia phân tầng 70/15/15 với seed 42.”
+
+Câu hỏi có thể gặp:
+• Vì sao dHash mà không chỉ dùng hash file? → Hash file chỉ bắt ảnh giống từng byte. Ảnh bị resize hay nén lại có hash khác hoàn toàn, nhưng dHash gần như không đổi.
+• Vì sao ngưỡng 5? → 5/64 bit khoảng 8%, đủ chịu được nén lại và resize mà ít bắt nhầm hai ảnh khác nhau. Đây là tham số mặc định trong src/data_cleaning.py (--near-distance 5).
+• Phân tầng để làm gì? → Giữ tỉ lệ các lớp như nhau ở train, val và test, nên lớp nhỏ vẫn có đủ ảnh trong test.
+
+Nguồn: duplicate_report.csv (250 dòng: 198 same_label=True, 52 False); manifest: train 17.407, validation 3.733, test 3.746, seed 42.</aside>
+</section>

@@ -1,0 +1,37 @@
+<section id="demo" class="dark">
+<p class="eyebrow">15 · Demo</p>
+<h2 class="title" style="color:#F7F5F0;">Ứng dụng Streamlit với mô hình cuối</h2>
+<div class="row">
+<div class="col grow">
+<div class="card-dark" style="border:2px solid #2F4A73;">
+<h3 class="card-title">① Tải ảnh món ăn</h3>
+<p class="body">jpg / png bất kỳ, kể cả ảnh chụp điện thoại</p>
+</div>
+<div class="card-dark" style="border:2px solid #2F4A73;">
+<h3 class="card-title">② Mô hình E2 + temperature 1,80</h3>
+<p class="body">cùng tiền xử lý như lúc đánh giá: Resize 256 → CenterCrop 224 → Normalize</p>
+</div>
+<div class="card-dark" style="border:2px solid #2F4A73;">
+<h3 class="card-title">③ Top-3 kèm độ tự tin</h3>
+<p class="body">dưới ngưỡng (mặc định 70%) thì báo “Chưa xác định được món ăn”</p>
+</div>
+</div>
+<div class="col" style="width:760px; align-items:center; justify-content:center; border:2px dashed #5B7299; border-radius:16px; padding:28px;">
+<p class="lead">[Ảnh chụp màn hình demo dự phòng]</p>
+<p class="small">http://localhost:8501</p>
+</div>
+</div>
+<aside>Phần 3 · khoảng 1 phút 30 giây (demo trực tiếp).
+
+Chuẩn bị trước buổi thuyết trình: chạy notebook 03 (cell 0 rồi cell demo) hoặc lệnh
+VNFOOD_MODEL=models/final.pt .venv/bin/python -m streamlit run colab/demo_app.py
+rồi mở http://localhost:8501. Chuẩn bị sẵn 3 ảnh: một món dễ (bánh mì), một món dễ nhầm (phở), một ảnh không phải món ăn để thấy ngưỡng hoạt động.
+
+Lời nói: “Đây là demo. Ảnh tải lên đi qua đúng tiền xử lý như lúc đánh giá, vào ResNet-50 đã fine-tune, logit được chia cho nhiệt độ 1,80 rồi softmax. App hiện 3 món có xác suất cao nhất. Nếu độ tự tin cao nhất dưới ngưỡng, mặc định 70%, app báo chưa xác định được thay vì đoán bừa.”
+
+Câu hỏi có thể gặp:
+• Ảnh không phải món ăn thì sao? → Mô hình chỉ biết 30 lớp nên vẫn đưa ra một lớp; ngưỡng độ tự tin giúp từ chối phần lớn các trường hợp này, nhờ độ tự tin đã được hiệu chỉnh.
+• Chạy nhanh không? → ResNet-50 trên CPU Mac M4 mất khoảng 13 ms một ảnh.
+
+Nguồn: colab/demo_app.py (threshold mặc định 0,70, top_k 3, chia logit cho temperature trong checkpoint); colab/results/_compare/comparison.csv (C1 cpu_ms_per_image 12,97 trên M4).</aside>
+</section>

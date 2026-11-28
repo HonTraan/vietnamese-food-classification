@@ -1,0 +1,23 @@
+<section id="a2-cnn-layers" class="alt">
+<p class="eyebrow">Phụ lục A2 · CNN tự xây (E1)</p>
+<h2 class="title">4 block Conv – BN – ReLU, 397.086 tham số</h2>
+<table class="t-small">
+<tr class="hd"><th style="width:30%">Khối</th><th style="width:30%">Phép toán</th><th style="width:22%">Ra</th><th style="width:18%; text-align:right">Tham số</th></tr>
+<tr><td>Đầu vào</td><td>ảnh đã chuẩn hoá</td><td>3×224×224</td><td style="text-align:right">0</td></tr>
+<tr><td>Block 1</td><td>Conv 3×3 (pad 1), 32 + BN + ReLU + MaxPool 2</td><td>32×112×112</td><td style="text-align:right">960</td></tr>
+<tr><td>Block 2</td><td>Conv 3×3, 64 + BN + ReLU + MaxPool 2</td><td>64×56×56</td><td style="text-align:right">18.624</td></tr>
+<tr><td>Block 3</td><td>Conv 3×3, 128 + BN + ReLU + MaxPool 2</td><td>128×28×28</td><td style="text-align:right">74.112</td></tr>
+<tr><td>Block 4</td><td>Conv 3×3, 256 + BN + ReLU (không pool)</td><td>256×28×28</td><td style="text-align:right">295.680</td></tr>
+<tr><td>Global average pool</td><td>AdaptiveAvgPool2d(1) + Flatten</td><td>256</td><td style="text-align:right">0</td></tr>
+<tr><td>Classifier</td><td>Dropout 0.4 + Linear(256 → 30)</td><td>30</td><td style="text-align:right">7.710</td></tr>
+</table>
+<p class="body">MACs: 0,74 G mỗi ảnh. Train từ đầu: lr 1e-3, 15 epoch, ReduceLROnPlateau, label smoothing 0,05.</p>
+<p class="src">Nguồn: src/cnn_baseline.py · colab/results/_slides/layers_cnn.csv</p>
+<aside>Phụ lục, mở khi thầy hỏi về mạng tự xây.
+
+Giải thích: mỗi block dùng conv 3×3 padding 1 nên giữ nguyên kích thước, rồi MaxPool 2×2 giảm một nửa. Block 4 không pool vì ngay sau là global average pooling. Tham số conv có bias: 3×3×C_in×C_out + C_out; ví dụ block 4: 3×3×128×256 + 256 = 295.168, cộng BN 2×256 = 512 thành 295.680.
+
+Vì sao chỉ đạt 61%: mạng có 0,4 triệu tham số, nhỏ hơn ResNet-50 khoảng 59 lần, và học từ 17.407 ảnh mà không có đặc trưng pretrained. Biểu đồ train/val cho thấy underfit (train ≈ val, vẫn đang tăng).
+
+Nguồn: layers_cnn.csv (features.0 896, features.1 64, features.4 18.496, features.5 128, features.8 73.856, features.9 256, features.12 295.168, features.13 512, classifier.2 7.710).</aside>
+</section>

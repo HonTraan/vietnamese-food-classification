@@ -1,0 +1,36 @@
+<section id="training">
+<p class="eyebrow">9 · Cấu hình huấn luyện</p>
+<h2 class="title">Siêu tham số dùng chung cho mọi run</h2>
+<div class="row">
+<table class="t-small" style="width:1000px;">
+<tr class="hd"><th style="width:30%">Thành phần</th><th style="width:40%">E2–E4, C1, T*</th><th style="width:30%">E1 · CNN tự xây</th></tr>
+<tr><td>Loss</td><td>CrossEntropy</td><td>CE + label smoothing 0,05</td></tr>
+<tr><td>Optimizer</td><td>AdamW, weight decay 1e-4</td><td>AdamW, weight decay 1e-4</td></tr>
+<tr><td>Learning rate ban đầu</td><td>3e-4</td><td>1e-3</td></tr>
+<tr><td>Scheduler</td><td>CosineAnnealingLR (T_max = 12)</td><td>ReduceLROnPlateau (×0,5, patience 1)</td></tr>
+<tr><td>Epoch tối đa</td><td>12</td><td>15</td></tr>
+<tr><td>Early stopping</td><td>patience 4 theo val accuracy</td><td>patience 4</td></tr>
+<tr><td>Batch size</td><td>32</td><td>32</td></tr>
+<tr><td>Số thực</td><td>fp16 AMP trên T4, fp32 trên M4</td><td>fp16 AMP trên T4</td></tr>
+<tr><td>Checkpoint giữ lại</td><td>epoch có val accuracy cao nhất</td><td>như bên trái</td></tr>
+</table>
+<div class="col grow">
+<p class="formula">η_t = ½ · η₀ · (1 + cos(π·t / T))</p>
+<p class="body">Cosine: lr giảm mượt từ 3e-4 về 0 sau 12 epoch, bước đầu học nhanh, cuối tinh chỉnh nhỏ.</p>
+<p class="formula">L = − log softmax(z)_y</p>
+<p class="body">AdamW tách weight decay khỏi gradient, nên regularization không bị thang đo adaptive của Adam làm yếu đi.</p>
+</div>
+</div>
+<p class="src">Nguồn: colab/train_arch.py · colab/experiments.py · colab/results/_slides/hyperparams.csv</p>
+<aside>Phần 2 · khoảng 1 phút 15 giây.
+
+Lời nói: “Mọi run dùng chung một script train. Loss là cross-entropy. Optimizer AdamW với learning rate 3e-4 và weight decay 1e-4. Learning rate giảm theo cosine trong 12 epoch. Batch 32. Early stopping với patience 4 theo validation accuracy, và checkpoint được giữ là epoch có val accuracy cao nhất. Trên T4 nhóm dùng mixed precision fp16 để nhanh hơn; trên Mac M4 chạy fp32. Riêng CNN tự xây train từ đầu nên dùng lr lớn hơn 1e-3, 15 epoch, ReduceLROnPlateau và label smoothing 0,05.”
+
+Câu hỏi có thể gặp:
+• Vì sao lr 3e-4 cho fine-tune? → Đủ nhỏ để không phá trọng số pretrained, đủ lớn để head mới học nhanh. Thí nghiệm T4a (1e-3) giảm 1,4 điểm val, T4b (1e-4) gần bằng (−0,1 điểm).
+• Vì sao AdamW mà không SGD? → AdamW hội tụ nhanh với ít tinh chỉnh, phù hợp ngân sách 12 epoch. Weight decay tách rời giữ đúng tác dụng regularization.
+• AMP fp16 có làm giảm độ chính xác không? → GradScaler nhân loss trước khi backward để gradient fp16 không bị tràn về 0. C1 (fp32) và E2 (fp16) chỉ lệch 0,08 điểm val.
+• Early stopping có kích hoạt không? → Với 12 epoch và patience 4, các run pretrained chạy đủ 12 epoch; ví dụ E2 đạt val cao nhất ở epoch 11.
+
+Nguồn: train_arch.py (AdamW weight_decay=1e-4; ReduceLROnPlateau factor 0.5 patience 1 cho cnn; CosineAnnealingLR T_max=cfg.epochs); experiments.py (RunConfig: lr 3e-4, epochs 12, batch_size 32, patience 4; E1 lr 1e-3, label_smoothing 0.05, epochs 15); E2 metrics.json best_epoch 11.</aside>
+</section>

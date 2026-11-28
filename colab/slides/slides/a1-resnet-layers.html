@@ -1,0 +1,24 @@
+<section id="a1-resnet-layers" class="alt">
+<p class="eyebrow">Phụ lục A1 · ResNet-50 chi tiết</p>
+<h2 class="title">Từng tầng của khối đầu layer1 và layer2</h2>
+<table class="t-small">
+<tr class="hd"><th style="width:26%">Tầng (tên trong PyTorch)</th><th style="width:18%">Vào</th><th style="width:18%">Ra</th><th style="width:10%">Kernel</th><th style="width:10%">Stride</th><th style="width:18%; text-align:right">Tham số</th></tr>
+<tr><td>conv1</td><td>3×224×224</td><td>64×112×112</td><td>7×7</td><td>2</td><td style="text-align:right">9.408</td></tr>
+<tr><td>maxpool</td><td>64×112×112</td><td>64×56×56</td><td>3×3</td><td>2</td><td style="text-align:right">0</td></tr>
+<tr><td>layer1.0.conv1</td><td>64×56×56</td><td>64×56×56</td><td>1×1</td><td>1</td><td style="text-align:right">4.096</td></tr>
+<tr><td>layer1.0.conv2</td><td>64×56×56</td><td>64×56×56</td><td>3×3</td><td>1</td><td style="text-align:right">36.864</td></tr>
+<tr><td>layer1.0.conv3</td><td>64×56×56</td><td>256×56×56</td><td>1×1</td><td>1</td><td style="text-align:right">16.384</td></tr>
+<tr><td>layer1.0.downsample.0</td><td>64×56×56</td><td>256×56×56</td><td>1×1</td><td>1</td><td style="text-align:right">16.384</td></tr>
+<tr><td>layer2.0.conv1</td><td>256×56×56</td><td>128×56×56</td><td>1×1</td><td>1</td><td style="text-align:right">32.768</td></tr>
+<tr><td>layer2.0.conv2</td><td>128×56×56</td><td>128×28×28</td><td>3×3</td><td>2</td><td style="text-align:right">147.456</td></tr>
+<tr><td>layer2.0.conv3</td><td>128×28×28</td><td>512×28×28</td><td>1×1</td><td>1</td><td style="text-align:right">65.536</td></tr>
+<tr><td>layer2.0.downsample.0</td><td>256×56×56</td><td>512×28×28</td><td>1×1</td><td>2</td><td style="text-align:right">131.072</td></tr>
+<tr><td>avgpool → fc</td><td>2048×7×7</td><td>30</td><td>—</td><td>—</td><td style="text-align:right">61.470</td></tr>
+</table>
+<p class="src">Mỗi conv đi kèm BatchNorm (2 tham số mỗi kênh) và ReLU. Bảng đầy đủ 126 module: colab/results/_slides/layers_resnet50.csv</p>
+<aside>Phụ lục, mở khi thầy hỏi chi tiết từng tầng.
+
+Cách đọc: số tham số của conv không bias = k × k × C_in × C_out. Ví dụ layer2.0.conv2: 3 × 3 × 128 × 128 = 147.456. Conv trong ResNet không có bias vì ngay sau là BatchNorm. Stride 2 nằm ở conv 3×3 (layer2.0.conv2) và ở nhánh downsample (layer2.0.downsample.0), nên hai nhánh cùng ra 512×28×28 và cộng được với nhau.
+
+Nguồn: colab/results/_slides/layers_resnet50.csv (sinh bởi colab/tools/slide_assets.py bằng forward hook).</aside>
+</section>

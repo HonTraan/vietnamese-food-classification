@@ -1,0 +1,26 @@
+<section id="a3-heads" class="alt">
+<p class="eyebrow">Phụ lục A3 · Head của từng mạng pretrained</p>
+<h2 class="title">Nhóm chỉ thay lớp cuối, phần còn lại giữ nguyên kiến trúc</h2>
+<table class="t-small">
+<tr class="hd"><th style="width:20%">Mạng</th><th style="width:18%">Feature map cuối</th><th style="width:44%">Head sau khi thay</th><th style="width:18%; text-align:right">Tham số head</th></tr>
+<tr><td>ResNet-50</td><td>2048×7×7</td><td>avgpool → Linear(2048 → 30)</td><td style="text-align:right">61.470</td></tr>
+<tr><td>MobileNetV3-Large</td><td>960×7×7</td><td>avgpool → Linear(960 → 1280) → Hardswish → Dropout 0.2 → Linear(1280 → 30)</td><td style="text-align:right">1.268.510</td></tr>
+<tr><td>EfficientNet-B0</td><td>1280×7×7</td><td>avgpool → Dropout 0.2 → Dropout 0.3 → Linear(1280 → 30)</td><td style="text-align:right">38.430</td></tr>
+</table>
+<div class="row">
+<div class="card">
+<p class="card-tag">Lớp Linear cuối cùng</p>
+<p class="body">của mỗi chuỗi là lớp nhóm tạo mới (cùng Dropout 0.3 ở EfficientNet), khởi tạo ngẫu nhiên. Phần còn lại lấy trọng số ImageNet của torchvision.</p>
+</div>
+<div class="card">
+<p class="card-tag">Khi đóng băng backbone (T1)</p>
+<p class="body">chỉ head được train: 61.470 trên 23.569.502 tham số của ResNet-50, tức 0,26%.</p>
+</div>
+</div>
+<p class="src">Nguồn: colab/models_zoo.py · colab/results/_slides/model_summary.csv (head_params, frozen_trainable_params)</p>
+<aside>Phụ lục, mở khi thầy hỏi cách thay head.
+
+Code: ResNet-50 thay model.fc; MobileNetV3 thay model.classifier[3]; EfficientNet-B0 thay model.classifier[1] bằng Sequential(Dropout(0.3), Linear(1280, 30)), giống head trong src/train.py của nhóm để checkpoint dùng được với app.py. Với MobileNetV3, lớp Linear(960→1280) pretrained được giữ, nên head (tính cả lớp này) có 1.268.510 tham số.
+
+Nguồn: models_zoo.py build(); model_summary.csv.</aside>
+</section>

@@ -1,0 +1,37 @@
+<section id="problem">
+<p class="eyebrow">1 · Bài toán</p>
+<h2 class="title">Từ một bức ảnh món ăn đến 1 trong 30 nhãn</h2>
+<div class="row">
+<div class="card">
+<p class="card-tag">Đầu vào</p>
+<h3 class="card-title">Ảnh RGB bất kỳ</h3>
+<p class="body">Ảnh chụp từ web, đủ góc chụp và ánh sáng. Đưa về tensor 3×224×224 trước khi vào mạng.</p>
+</div>
+<div class="card">
+<p class="card-tag">Đầu ra</p>
+<h3 class="card-title">Phân phối xác suất 30 lớp</h3>
+<p class="body">Softmax trên 30 logit. Demo hiện top-3 kèm độ tự tin đã hiệu chỉnh.</p>
+</div>
+<div class="card">
+<p class="card-tag">Khó ở đâu</p>
+<h3 class="card-title">Món nước giống nhau</h3>
+<p class="body">Phở, bún bò Huế, hủ tiếu, bánh canh cùng là tô nước có sợi. Số ảnh mỗi lớp lệch nhau 3,5 lần.</p>
+</div>
+</div>
+<div class="row">
+<div class="card-dark grow">
+<h3 class="card-title">Tiêu chí đánh giá</h3>
+<p class="body">Accuracy · Macro-F1 (mỗi lớp nặng như nhau, không bị lớp đông áp đảo) · Top-3 accuracy · ECE (độ tự tin có khớp tỉ lệ đúng không). Chọn mô hình theo validation accuracy; tập test chỉ dùng để báo cáo.</p>
+</div>
+</div>
+<aside>Phần 1 · khoảng 45 giây.
+
+Lời nói: “Bài toán là phân loại ảnh đơn nhãn: một ảnh vào, một trong 30 món ra. Mạng trả về 30 logit, qua softmax thành xác suất. Khó nhất là các món nước có sợi trông rất giống nhau, và dữ liệu mất cân bằng: lớp ít nhất 437 ảnh, lớp nhiều nhất 1.517 ảnh. Vì vậy ngoài accuracy, nhóm báo cáo thêm macro-F1, top-3 và ECE.”
+
+Câu hỏi có thể gặp:
+• Vì sao cần macro-F1? → Accuracy bị lớp đông chi phối. Macro-F1 lấy trung bình F1 của 30 lớp với trọng số bằng nhau, nên lớp nhỏ như bánh pía cũng được tính đủ.
+• ECE là gì? → Expected Calibration Error: chia dự đoán thành các khoảng độ tự tin, lấy trung bình có trọng số của |độ tự tin − tỉ lệ đúng|. ECE thấp nghĩa là khi mô hình nói 90% thì đúng khoảng 90%.
+• Vì sao không chọn theo test? → Chọn theo test là dùng test để tinh chỉnh, khiến con số test bị lạc quan. Val dùng để chọn, test giữ nguyên để báo cáo trung thực.
+
+Nguồn: colab/results/_eda/eda_summary.json (437 = Banh pia, 1.517 = Bun bo Hue).</aside>
+</section>
