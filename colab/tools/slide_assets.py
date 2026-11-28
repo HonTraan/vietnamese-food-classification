@@ -4,10 +4,16 @@ Run: python -m colab.tools.slide_assets [--runs colab/results] [--out colab/resu
 """
 from __future__ import annotations
 
+import argparse
+import csv
+import json
+from pathlib import Path
+
 import torch
 from torch import nn
 
-from colab.models_zoo import build, count_params, head
+from colab import compare
+from colab.models_zoo import ARCHS, build, count_params, head
 
 IMAGE = (1, 3, 224, 224)
 
@@ -99,3 +105,164 @@ def model_summary(arch: str, num_classes: int = 30) -> dict:
     return {"arch": arch, "total_params": count_params(model), "head_params": count_params(head_module),
             "frozen_trainable_params": frozen, "macs": sum(traced[name][2] for name in leaves if name in traced),
             "final_feature_shape": traced["_features"][1]}
+
+
+# ---------------------------------------------------------------- figures and tables from finished runs
+
+def _pyplot():
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    return plt
+
+
+def _history(run_dir: Path) -> list[dict]:
+    with (Path(run_dir) / "history.csv").open(encoding="utf-8") as file:
+        return [{key: float(value) for key, value in row.items()} for row in csv.DictReader(file)]
+
+
+def _metrics(run_dir: Path) -> dict:
+    return json.loads((Path(run_dir) / "metrics.json").read_text(encoding="utf-8"))
+
+
+def grid_run_ids(rows: list[dict]) -> list[str]:
+    """Runs shown in the learning-curve grid: every finished run, in compare's order."""
+    return [row["run_id"] for row in rows]
+
+
+def learning_curves_grid(rows: list[dict], out: Path) -> Path:
+    plt = _pyplot()
+    figure, axes = plt.subplots(len(rows), 2, figsize=(11, 2.4 * len(rows)), squeeze=False)
+    for (left, right), row in zip(axes, rows):
+        history = _history(row["run_dir"])
+        epochs = [h["epoch"] for h in history]
+        best = _metrics(row["run_dir"]).get("best_epoch")
+        for axis, key, title in ((left, "accuracy", "Accuracy"), (right, "loss", "Loss")):
+            axis.plot(epochs, [h[f"train_{key}"] for h in history], label="Train")
+            axis.plot(epochs, [h[f"val_{key}"] for h in history], label="Validation")
+            if best:
+                axis.axvline(best, color="gray", linestyle="--", linewidth=0.8)
+            axis.set_title(f"{row['run_id']} — {title}", fontsize=9)
+            axis.tick_params(labelsize=7)
+        left.legend(fontsize=7)
+    axes[-1][0].set_xlabel("Epoch"); axes[-1][1].set_xlabel("Epoch")
+    figure.suptitle("Train vs validation của mọi run (vạch đứt: epoch có val tốt nhất)")
+    figure.tight_layout(); figure.savefig(out, dpi=150); plt.close(figure)
+    return Path(out)
+
+
+def train_val_gap(rows: list[dict], out: Path) -> Path:
+    plt = _pyplot()
+    gaps = []
+    for row in rows:
+        history = _history(row["run_dir"])
+        best = max(history, key=lambda h: h["val_accuracy"])
+        gaps.append((row["run_id"], (best["train_accuracy"] - best["val_accuracy"]) * 100))
+    figure, axis = plt.subplots(figsize=(8, 0.45 * len(gaps) + 1.2))
+    axis.barh([g[0] for g in gaps], [g[1] for g in gaps], color="tab:orange")
+    axis.axvline(0, color="black", linewidth=0.8)
+    for y, (_, gap) in enumerate(gaps):
+        axis.annotate(f"{gap:+.1f}", (gap, y), xytext=(3 if gap >= 0 else -3, 0), textcoords="offset points",
+                      ha="left" if gap >= 0 else "right", va="center", fontsize=8)
+    axis.invert_yaxis()
+    axis.set(xlabel="Train accuracy − val accuracy tại epoch val tốt nhất (điểm %)", title="Mức overfit của từng run")
+    figure.tight_layout(); figure.savefig(out, dpi=150); plt.close(figure)
+    return Path(out)
+
+
+def _class_names(report: dict) -> list[str]:
+    return [name for name, value in report.items() if isinstance(value, dict) and name not in ("macro avg", "weighted avg")]
+
+
+def per_class_f1(run_dir: Path, out: Path) -> Path:
+    plt = _pyplot()
+    report = _metrics(run_dir)["report"]
+    scores = sorted(((name, report[name]["f1-score"]) for name in _class_names(report)), key=lambda item: item[1])
+    figure, axis = plt.subplots(figsize=(8, 0.3 * len(scores) + 1.2))
+    axis.barh([s[0] for s in scores], [s[1] for s in scores], color="tab:blue")
+    for y, (_, score) in enumerate(scores):
+        axis.annotate(f"{score:.2f}", (score, y), xytext=(3, 0), textcoords="offset points", va="center", fontsize=7)
+    axis.set_xlim(0, 1.05)
+    axis.set(xlabel="F1 trên tập test", title=f"F1 theo từng lớp — {Path(run_dir).name}")
+    figure.tight_layout(); figure.savefig(out, dpi=150); plt.close(figure)
+    return Path(out)
+
+
+def row_normalized(matrix: list[list[int]]) -> list[list[float]]:
+    return [[value / sum(row) if sum(row) else 0.0 for value in row] for row in matrix]
+
+
+def confusion_grid(rows: list[dict], out: Path) -> Path:
+    import seaborn as sns
+    plt = _pyplot()
+    arch_rows = [row for row in rows if row["exp"] in ("E1", "E2", "E3", "E4")]
+    arch_rows.sort(key=lambda row: row["exp"])
+    figure, axes = plt.subplots(2, 2, figsize=(12, 11))
+    for axis, row in zip(axes.flat, arch_rows):
+        metrics = _metrics(row["run_dir"])
+        sns.heatmap(row_normalized(metrics["confusion_matrix"]), ax=axis, cmap="Blues", vmin=0, vmax=1, square=True,
+                    xticklabels=False, yticklabels=False, cbar=False)
+        axis.set_title(f"{row['run_id']} (test acc {metrics['test_accuracy']:.1%})", fontsize=10)
+        axis.set(xlabel="Dự đoán", ylabel="Nhãn thật")
+    for axis in list(axes.flat)[len(arch_rows):]:
+        axis.axis("off")
+    figure.suptitle("Confusion matrix chuẩn hoá theo hàng (đường chéo = recall từng lớp)")
+    figure.tight_layout(); figure.savefig(out, dpi=150); plt.close(figure)
+    return Path(out)
+
+
+HYPERPARAM_FIELDS = ["run_id", "arch", "pretrained", "freeze_backbone", "augment", "lr", "label_smoothing", "epochs",
+                     "batch_size", "patience", "seed", "optimizer", "weight_decay", "scheduler", "device"]
+
+
+def hyperparams_table(rows: list[dict]) -> list[dict]:
+    table = []
+    for row in rows:
+        config = json.loads((Path(row["run_dir"]) / "config.json").read_text(encoding="utf-8"))
+        scheduler = ("ReduceLROnPlateau(factor=0.5, patience=1)" if config["arch"] == "cnn"
+                     else "CosineAnnealingLR(T_max=epochs)")
+        table.append({**{key: config.get(key) for key in HYPERPARAM_FIELDS}, "run_id": row["run_id"],
+                      "optimizer": "AdamW", "weight_decay": 1e-4, "scheduler": scheduler})
+    return table
+
+
+def _write_csv(path: Path, rows: list[dict]) -> None:
+    with Path(path).open("w", newline="", encoding="utf-8") as file:
+        writer = csv.DictWriter(file, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def _final_run_dir(runs_dir: Path, rows: list[dict]) -> Path:
+    final = Path(runs_dir) / "_compare" / "final.json"
+    if final.is_file():
+        return Path(runs_dir) / json.loads(final.read_text(encoding="utf-8"))["run_id"]
+    return Path(compare.pick_best(rows)["run_dir"])
+
+
+def main(runs_dir: Path, out_dir: Path) -> None:
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    rows = compare.collect(runs_dir)
+    archs = [arch for arch in ARCHS if arch != "convnext_tiny"]
+    for arch in archs:
+        _write_csv(out_dir / f"layers_{arch}.csv", layer_table(arch))
+    _write_csv(out_dir / "resnet50_stages.csv", resnet_stage_summary())
+    _write_csv(out_dir / "model_summary.csv", [model_summary(arch) for arch in archs])
+    _write_csv(out_dir / "hyperparams.csv", hyperparams_table(rows))
+    final_dir = _final_run_dir(runs_dir, rows)
+    learning_curves_grid(rows, out_dir / "learning_curves_grid.png")
+    train_val_gap(rows, out_dir / "train_val_gap.png")
+    per_class_f1(final_dir, out_dir / f"per_class_f1_{final_dir.name}.png")
+    confusion_grid(rows, out_dir / "confusion_grid.png")
+    print(f"Runs: {', '.join(grid_run_ids(rows))}")
+    for path in sorted(out_dir.iterdir()):
+        print(path)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--runs", type=Path, default=Path("colab/results"))
+    parser.add_argument("--out", type=Path, default=Path("colab/results/_slides"))
+    args = parser.parse_args()
+    main(args.runs, args.out)
