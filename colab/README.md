@@ -95,6 +95,7 @@ bash colab/pull_results.sh             # kéo mọi run về colab/results/ (b�
 bash colab/pull_results.sh E4_efficientnet_b0   # chỉ kéo một run
 bash colab/tests/test_sync.sh          # test hai script trên
 python3 colab/tools/build_notebooks.py # build lại .ipynb từ colab/notebooks/src/*.py
+.venv/bin/python -m colab.tools.slide_assets   # bảng từng tầng, tóm tắt model, biểu đồ train/val cho slide -> colab/results/_slides/
 ```
 
 Đặt `VNFOOD_DRIVE_ROOT=/đường/dẫn/vnfood_colab` nếu máy có nhiều tài khoản Drive. Notebook được viết ở `colab/notebooks/src/*.py` (dạng `# %%`). Sửa ở đó rồi build lại, đừng sửa trực tiếp `.ipynb`.
